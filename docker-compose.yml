@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+  database:
+    hostname: database
+    image: postgres:latest
+    container_name: "lightnings_postgres"
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql
+
+volumes:
+  database:
+
