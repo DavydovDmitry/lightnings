@@ -1,4 +1,5 @@
 import json
+import datetime
 
 import requests
 
@@ -6,7 +7,7 @@ import requests
 if __name__ == "__main__":
     response = requests.get('http://www.lightnings.ru/vr44_24.php')
     content = response.content.replace(b'rs', b'"rs"')
-    with open('./output/responce.txt', 'wb') as output:
+    with open('./output/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
         output.write(content)
 
     max_longitude = -180.0
