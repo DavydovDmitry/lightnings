@@ -1,6 +1,9 @@
-from database.upload_lightnings import upload_lightnings
-from database.scrap_instagram import scrap_instagram
+from lightnings_data.upload_lightnings import upload_lightnings
+from instagram.scraper import Scraper
+
 
 if __name__ == "__main__":
     #upload_lightnings()
-    scrap_instagram()
+
+    scraper = Scraper(tag='lightnings')
+    print(len(scraper.get_urls(quantity=300)))
