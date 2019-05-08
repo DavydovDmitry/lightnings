@@ -16,7 +16,7 @@ def upload_lightnings(verbose=True):
 
     response = requests.get('http://www.lightnings.ru/vr44_24.php')
     content = response.content.replace(b'rs', b'"rs"')
-    with open('./output/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
+    with open('./lightnings_jsons/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
         output.write(content)
 
     Session = sessionmaker()
