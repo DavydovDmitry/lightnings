@@ -6,4 +6,5 @@ if __name__ == "__main__":
     #upload_lightnings()
 
     scraper = Scraper(tag='lightnings')
-    print(len(scraper.get_urls(quantity=300)))
+    multimedia = scraper.get_multimedia(quantity=10)
+    print(len(multimedia))

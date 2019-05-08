@@ -19,13 +19,14 @@ class Lightning(Base):
     longitude = Column(Float, nullable=False)
     latitude = Column(Float, nullable=False)
 
-class Photo(Base):
-    __tablename__ = 'photo'
+class Media(Base):
+    __tablename__ = 'media'
 
-    photo_id = Column(Integer, primary_key=True)
+    media_id = Column(Integer, primary_key=True)
     url = Column(String(200), nullable=False)
     lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
     lightning = relationship(Lightning)
+
  
 engine = create_engine('postgresql+psycopg2://customer:1@0.0.0.0:5434/lightnings')
  

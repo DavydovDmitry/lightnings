@@ -6,10 +6,14 @@ import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .sqlalchemy_declarative import Lightning
+from database.sqlalchemy_declarative import Lightning
 
 
-def upload_lightnings():
+def upload_lightnings(verbose=True):
+    """
+        Get data about thunderstorms for the last day.
+    """
+
     response = requests.get('http://www.lightnings.ru/vr44_24.php')
     content = response.content.replace(b'rs', b'"rs"')
     with open('./output/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
@@ -29,3 +33,6 @@ def upload_lightnings():
         lightning = Lightning(latitude=latitude, longitude=longitude, time_start=time_start, time_end=time_end, quantity=quantity)
         session.add(lightning)
     session.commit()
+
+    if verbose:
+        print('Successfully. Uploaded data about thunderstorms for the last day.')
