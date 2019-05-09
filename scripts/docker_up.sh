@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-export $(cat ./../config/local.env)
+SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $SCRIPTS_PATH
+cd ../
+export $(cat ./config/local.env)
+cd scripts
 
-# docker-compose build
-# docker-compose down
 docker-compose up

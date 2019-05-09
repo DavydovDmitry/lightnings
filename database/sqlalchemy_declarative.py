@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 
+
 Base = declarative_base()
  
 class Lightning(Base):
@@ -28,8 +29,12 @@ class Media(Base):
     lightning = relationship(Lightning)
 
  
-engine = create_engine('postgresql+psycopg2://customer:1@0.0.0.0:5434/lightnings')
- 
-# Create all tables in the engine. This is equivalent to "Create Table"
-# statements in raw SQL.
+database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
+        'DB_USER': os.environ['DB_USER'],
+        'DB_PASSWORD': os.environ['DB_PASSWORD'],
+        'DB_IP': os.environ['DB_IP'],
+        'DB_PORT': os.environ['DB_PORT'],
+        'DB_NAME': os.environ['DB_NAME']
+    })
+engine = create_engine(database_uri)
 Base.metadata.create_all(engine)

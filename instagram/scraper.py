@@ -4,8 +4,8 @@ import hashlib
 
 import requests
 
-from .info import get_media_info
-from .info import Media_info
+from .media_info import get_media_info
+from .media_info import Media_info
 
 
 def get_query_hash():
@@ -63,11 +63,11 @@ class Scraper:
             media_info.url = node['display_url']
         return media_info 
 
-    def get_multimedia(self, quantity=100):
+    def get_multimedia(self, min_quantity=100, verbose=True):
         multimedia = set()
         hashtag_data = self.init_session()
         
-        while len(multimedia) < quantity:
+        while len(multimedia) < min_quantity:
             edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
             for edge in edge_hashtag_to_media['edges']:
                 media = self.handle_media(edge['node'])
@@ -81,5 +81,7 @@ class Scraper:
                 response = self.session.get('https://www.instagram.com/graphql/query/', **settings)
                 hashtag_data = json.loads(response.text)['data']['hashtag']
             else:
-                return multimedia
+                break
+        if verbose:
+            print('Successfully. Uploaded data about media.')
         return multimedia

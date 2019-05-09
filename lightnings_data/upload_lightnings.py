@@ -19,9 +19,15 @@ def upload_lightnings(verbose=True):
     with open('./lightnings_jsons/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
         output.write(content)
 
-    Session = sessionmaker()
-    engine = create_engine(os.environ['DATABASE_URI'][1:-1])
-    Session.configure(bind=engine)
+    database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
+        'DB_USER': os.environ['DB_USER'],
+        'DB_PASSWORD': os.environ['DB_PASSWORD'],
+        'DB_IP': os.environ['DB_IP'],
+        'DB_PORT': os.environ['DB_PORT'],
+        'DB_NAME': os.environ['DB_NAME']
+    })
+    engine = create_engine(database_uri)
+    Session = sessionmaker(bind=engine)
     session = Session()
 
     for item in json.loads(content)['rs']:
