@@ -11,5 +11,3 @@ docker-compose up -d
 source ../venv/bin/activate
 python ../database/sqlalchemy_declarative.py
 deactivate
-
-docker-compose stop

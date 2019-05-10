@@ -16,6 +16,12 @@ class Media_info:
 
         
 def get_media_info(media_info):
+    """
+        Fill media_info object using it's shortcode for requests.
+        Set longitude, latitude, upload_date and url if it is video,
+        if some of these fields are empty then return None.
+    """
+
     response = requests.get('https://www.instagram.com/p/' + media_info.shortcode)
     try:   
         context_match = json.loads(re.search(r'({"@context"(?!</script>).*)\s*</script>', response.text)[1])

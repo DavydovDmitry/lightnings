@@ -5,6 +5,7 @@ import os
 import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import sqlalchemy
 
 from database.sqlalchemy_declarative import Lightning
 
@@ -16,7 +17,9 @@ def upload_thunders_json(verbose=True):
 
     response = requests.get('http://www.lightnings.ru/vr44_24.php')
     content = response.content.replace(b'rs', b'"rs"')
-    with open('./thunder_jsons/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
+
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    with open(dir_path + '/thunder_jsons/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
         output.write(content)
     if verbose:
         print('Successfully. Uploaded data about thunderstorms for the last day.')
@@ -26,7 +29,7 @@ def upload_thunders_db(verbose=True):
         Upload data to database.
     """
 
-    path_to_jsons = './thunder_jsons/'
+    path_to_jsons = os.path.dirname(os.path.abspath(__file__)) + '/thunder_jsons/'
 
     database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
         'DB_USER': os.environ['DB_USER'],
@@ -39,6 +42,8 @@ def upload_thunders_db(verbose=True):
     Session = sessionmaker(bind=engine)
     session = Session()
 
+    lightnings = set()
+    hashes = set(map(hash, session.query(Lightning).all()))
     for file in os.listdir(path_to_jsons):
         with open(path_to_jsons + file) as js:
             content = js.read()
@@ -67,8 +72,16 @@ def upload_thunders_db(verbose=True):
                                     time_start=time_start,
                                     time_end=time_end,
                                     quantity=quantity)
-                session.add(lightning)
+                
+                if lightning.__hash__() not in hashes:
+                    lightnings.add(lightning)
+    for lightning in lightnings:
+        try:
+            session.add(lightning)
             session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            print('Uniqness error')
+            session.rollback()
 
     if verbose:
         print('Successfully. Uploaded data to db.')
