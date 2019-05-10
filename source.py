@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from database.sqlalchemy_declarative import Media, Lightning 
-from lightnings_data.upload_lightnings import upload_lightnings
 from instagram.scraper import Scraper
 
 
@@ -23,8 +22,6 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     session = Session()
     lightnings = session.query(Lightning).all()
-
-    #upload_lightnings()
 
     scraper = Scraper(tag='lightnings')
     multimedia = scraper.get_multimedia(min_quantity=1000)

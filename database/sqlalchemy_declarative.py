@@ -17,8 +17,15 @@ class Lightning(Base):
     time_start = Column(TIMESTAMP, nullable=False)
     time_end = Column(TIMESTAMP, nullable=False)
     quantity = Column(Integer, nullable=False)
-    longitude = Column(Float, nullable=False)
-    latitude = Column(Float, nullable=False)
+    
+    longitude_ru = Column(Float, nullable=False)
+    latitude_ru = Column(Float, nullable=False)
+    longitude_rd = Column(Float, nullable=False)
+    latitude_rd = Column(Float, nullable=False)
+    longitude_ld = Column(Float, nullable=False)
+    latitude_ld = Column(Float, nullable=False)
+    longitude_lu = Column(Float, nullable=False)
+    latitude_lu = Column(Float, nullable=False)
 
 class Media(Base):
     __tablename__ = 'media'
