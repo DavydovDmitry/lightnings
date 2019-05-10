@@ -1,6 +1,7 @@
 import json
 import re
 import hashlib
+import time
 
 import requests
 
@@ -58,10 +59,10 @@ class Scraper:
         return settings
 
     def handle_media(self, node):
-        media_info = get_media_info(node['shortcode'])
-        if media_info:
+        media_info = Media_info(shortcode=node['shortcode'])
+        if not node['is_video']:
             media_info.url = node['display_url']
-        return media_info 
+        return get_media_info(media_info)
 
     def get_multimedia(self, min_quantity=100, verbose=True):
         multimedia = set()
