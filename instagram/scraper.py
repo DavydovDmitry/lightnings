@@ -29,6 +29,10 @@ class Scraper:
         self.media = dict()
 
     def init_session(self):
+        """
+            First request to get requests settings.
+        """
+
         response = self.session.get(self.url)
         match = re.search(
             r"<script[^>]*>window._sharedData[ ]*=[ ]*((?!</script>).*);</script>",
@@ -81,6 +85,11 @@ class Scraper:
                 settings = self.get_settings(after=end_cursor)
                 response = self.session.get('https://www.instagram.com/graphql/query/', **settings)
                 hashtag_data = json.loads(response.text)['data']['hashtag']
+
+                if verbose:
+                    print('{:>{prec}} media were uploaded. Last end_cursor: '
+                          '{end_cursor}'.format(len(multimedia), prec=6,
+                          end_cursor=end_cursor))
             else:
                 break
         if verbose:

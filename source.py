@@ -8,7 +8,7 @@ from database.sqlalchemy_declarative import Media, Lightning
 from instagram.scraper import Scraper
 
 
-def upload_lightnings_db():
+def upload_lightnings_db(min_quantity=100):
     distance_limit = 1
     time_limit = datetime.timedelta(minutes=10)
 
@@ -25,7 +25,7 @@ def upload_lightnings_db():
     lightnings = session.query(Lightning).all()
 
     scraper = Scraper(tag='lightnings')
-    multimedia = scraper.get_multimedia(min_quantity=100)
+    multimedia = scraper.get_multimedia(min_quantity=min_quantity)
     for media in multimedia:
         for lightning in lightnings:
             if lightning.time_start - time_limit <= media.upload_date <= lightning.time_end + time_limit:
@@ -42,4 +42,10 @@ def upload_lightnings_db():
     session.close()
 
 if __name__ == "__main__":
-    upload_lightnings_db()
+    while True:
+        try:
+            min_quantity = int(input('min_quantity: '))
+            break
+        except ValueError as value_error:
+            print('Enter number...')
+    upload_lightnings_db(min_quantity=min_quantity)
