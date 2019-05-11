@@ -78,7 +78,7 @@ class Scraper:
         while len(multimedia) < min_quantity:
             if len(multimedia) > limit:
                 multimedia = set()
-                
+
             edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
             for edge in edge_hashtag_to_media['edges']:
                 media = self.handle_media(edge['node'])
@@ -97,7 +97,6 @@ class Scraper:
                           '{end_cursor}'.format(len(multimedia), prec=6,
                           end_cursor=end_cursor))
 
-                # todo:
                 if len(multimedia) > limit:
                     yield multimedia
             else:
