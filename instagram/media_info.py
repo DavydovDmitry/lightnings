@@ -13,6 +13,7 @@ class Media_info:
         self.upload_date = upload_date
         self.url = url
         self.shortcode = shortcode
+        self.is_video = None
 
         
 def get_media_info(media_info):
@@ -28,7 +29,7 @@ def get_media_info(media_info):
     except TypeError:
         return None
         
-    if not media_info.url:
+    if media_info.is_video:
         video_match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response.text)[1]
         media_info.url = json.loads(video_match)['entry_data']['PostPage'][0]['graphql']['shortcode_media']['video_url']
 

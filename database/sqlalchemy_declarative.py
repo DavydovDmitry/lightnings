@@ -97,12 +97,28 @@ class Lightning(Base):
                 longitude_lu = self.longitude_lu,
                 latitude_lu = self.latitude_lu)
 
-class Media(Base):
-    __tablename__ = 'media'
+class Image(Base):
+    __tablename__ = 'image'
 
-    media_id = Column(Integer, primary_key=True)
+    image_id = Column(Integer, primary_key=True)
     url = Column(String(200), nullable=False, unique=True)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    shortcode = Column(String(50), nullable=False)
     lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
+
+    lightning = relationship(Lightning)
+
+class Video(Base):
+    __tablename__ = 'video'
+
+    video_id = Column(Integer, primary_key=True)
+    url = Column(String(200), nullable=False, unique=True)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    shortcode = Column(String(50), nullable=False)
+    lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
+
     lightning = relationship(Lightning)
 
  

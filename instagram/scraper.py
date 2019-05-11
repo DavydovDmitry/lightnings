@@ -64,15 +64,21 @@ class Scraper:
 
     def handle_media(self, node):
         media_info = Media_info(shortcode=node['shortcode'])
-        if not node['is_video']:
+        if node['is_video']:
+            media_info.is_video = True
+        else:
+            # todo size
             media_info.url = node['display_url']
         return get_media_info(media_info)
 
-    def get_multimedia(self, min_quantity=100, verbose=True):
+    def get_multimedia(self, min_quantity=100, limit=100, verbose=True):
         multimedia = set()
         hashtag_data = self.init_session()
         
         while len(multimedia) < min_quantity:
+            if len(multimedia) > limit:
+                multimedia = set()
+                
             edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
             for edge in edge_hashtag_to_media['edges']:
                 media = self.handle_media(edge['node'])
@@ -90,6 +96,10 @@ class Scraper:
                     print('{:>{prec}} media were uploaded. Last end_cursor: '
                           '{end_cursor}'.format(len(multimedia), prec=6,
                           end_cursor=end_cursor))
+
+                # todo:
+                if len(multimedia) > limit:
+                    yield multimedia
             else:
                 break
         if verbose:
