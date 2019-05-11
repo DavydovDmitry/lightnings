@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import datetime
 import os
 
 import requests
@@ -19,7 +19,7 @@ def upload_thunders_json(verbose=True):
     content = response.content.replace(b'rs', b'"rs"')
 
     dir_path = os.path.dirname(os.path.abspath(__file__))
-    with open(dir_path + '/thunder_jsons/' + datetime.datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
+    with open(dir_path + '/thunder_jsons/' + datetime.now().strftime("%Y.%m.%d") + '.json', 'wb') as output:
         output.write(content)
     if verbose:
         print('Successfully. Uploaded data about thunderstorms for the last day.')
@@ -61,27 +61,29 @@ def upload_thunders_db(verbose=True):
                 latitude_lu = float(item['p4t'])
 
                 quantity = int(item['cnt'])
-                lightning = Lightning(longitude_ru=longitude_ru,
-                                    latitude_ru=latitude_ru,
-                                    longitude_rd=longitude_rd,
-                                    latitude_rd=latitude_rd,
-                                    longitude_ld=longitude_ld,
-                                    latitude_ld=latitude_ld,
-                                    longitude_lu=longitude_lu,
-                                    latitude_lu=latitude_lu,
-                                    time_start=time_start,
-                                    time_end=time_end,
-                                    quantity=quantity)
+                lightning = Lightning(
+                    longitude_ru=longitude_ru,
+                    latitude_ru=latitude_ru,
+                    longitude_rd=longitude_rd,
+                    latitude_rd=latitude_rd,
+                    longitude_ld=longitude_ld,
+                    latitude_ld=latitude_ld,
+                    longitude_lu=longitude_lu,
+                    latitude_lu=latitude_lu,
+                    time_start=datetime.strptime(time_start, '%Y-%m-%d %H:%M:%S'),
+                    time_end=datetime.strptime(time_end, '%Y-%m-%d %H:%M:%S'),
+                    quantity=quantity)
                 
                 if lightning.__hash__() not in hashes:
                     lightnings.add(lightning)
-    for lightning in lightnings:
-        try:
-            session.add(lightning)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            print('Uniqness error')
-            session.rollback()
+    try:
+        session.add_all(lightnings)
+        session.commit()
+    except sqlalchemy.exc.IntegrityError as integrity_error:
+        raise integrity_error
+        session.rollback()
+    finally:
+        session.close()
 
     if verbose:
         print('Successfully. Uploaded data to db.')

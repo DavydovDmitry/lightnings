@@ -6,11 +6,4 @@ cd ../
 export $(cat ./config/local.env)
 cd scripts
 
-docker-compose up -d
-
-cd ../
-source venv/bin/activate
-python main.py
-deactivate
-
-docker-compose stop
+docker-compose up
