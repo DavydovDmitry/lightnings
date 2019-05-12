@@ -17,5 +17,5 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     upload_thunders_json()
     upload_thunders_db()
-    upload_lightnings_db(min_quantity=100, limit=50)
+    upload_lightnings_db(view_limit=100, upload_limit=50)
     build_map()

@@ -33,12 +33,15 @@ def get_media_info(media_info):
     except TypeError:
         return None
         
-    if media_info.is_video:
-        video_match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response.text)[1]
-        media_info.url = json.loads(video_match)['entry_data']['PostPage'][0]['graphql']['shortcode_media']['video_url']
-    # todo: find shape
-    # else:
+    shortcode_media = json.loads(re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', 
+        response.text)[1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
+    if media_info.is_video:        
+        media_info.url = shortcode_media['video_url']
+    else:
+        media_info.width = shortcode_media['dimensions']['width']
+        media_info.height = shortcode_media['dimensions']['height']
 
+    # look for location. Next requests.
     if 'contentLocation' in context_match:
         media_info.upload_date = datetime.strptime(context_match['uploadDate'], '%Y-%m-%dT%H:%M:%S')
         response = requests.get(context_match['contentLocation']['mainEntityofPage']['@id'])
