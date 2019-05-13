@@ -24,17 +24,11 @@ def build_map():
     engine = create_engine(database_uri)
     Session = sessionmaker(bind=engine)
     session = Session()
-    
-    #encoded = base64.b64encode(open('./map/icons/video-solid.png', 'rb').read())
-    #decoded = base64.b64decode(encoded)
-    #icon_url = io.BytesIO(decoded)
-    #video_icon = folium.features.CustomIcon(icon_url, icon_size=(50,50)) 
-    #video_icon = folium.Icon(color='red',icon='video', prefix='fa')
-    #video_icon = folium.Icon(color='red')
 
-    videos = session.query(Video).all()
     map = folium.Map(location=[60.25, 24.8], tiles='Stamen Terrain',
                    zoom_start=5, control_scale=True)
+                   
+    videos = session.query(Video).all()
     for video in videos:
         lightning = session.query(Lightning).filter_by(lightning_id=video.lightning_id).first()
         html = """
