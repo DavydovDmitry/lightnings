@@ -2,38 +2,41 @@ import json
 import re
 import hashlib
 import time
+from datetime import datetime
 
 import requests
 
-from .media_info import get_media_info
 from .media_info import Media_info
+from .proxy import Proxy
 
 
-def get_query_hash():
-    responce = requests.get('https://www.instagram.com/static/bundles/es6/Consumer.js/175fefa0cc6c.js')
-    match = re.findall('},queryId:"[a-zZ-Z0-9]*"', responce.text)
-    return match[0].split('"')[1]
-
-class Scraper:
+class Scraper(Proxy):
     """
         Scrapping explore page
     """
 
     def __init__(self, tag):
-        self.session = requests.Session()
+        super().__init__()
         self.rhx_gis = None
-        self.query_hash = get_query_hash()
+        self.query_hash = self.__get_query_hash()
+        self.proxies = self.get_proxies()
+        self.user_agents = self.get_user_agents()
         
         self.tag = tag
         self.url = 'https://www.instagram.com/explore/tags/' + tag
         self.media = dict()
+
+    def __get_query_hash(self):
+        responce = self.proxy_get_request('https://www.instagram.com/static/bundles/es6/Consumer.js/175fefa0cc6c.js')
+        match = re.findall('},queryId:"[a-zZ-Z0-9]*"', responce.text)
+        return match[0].split('"')[1]
 
     def init_session(self):
         """
             First request to get requests settings.
         """
 
-        response = self.session.get(self.url)
+        response = self.proxy_get_request(self.url)
         match = re.search(
             r"<script[^>]*>window._sharedData[ ]*=[ ]*((?!</script>).*);</script>",
             response.text,
@@ -43,16 +46,20 @@ class Scraper:
         return shared_data["entry_data"]["TagPage"][0]["graphql"]["hashtag"]
 
     def get_settings(self, after, first=80):
+        """
+            Prepare requests
+        """
+
         variables = json.dumps({
             "tag_name": self.tag,
             "first": first,
             "after": after
-        })
+        }, ensure_ascii=False) # output not ASCII letters as is
         gis = "%s:%s" % (self.rhx_gis, variables)
         settings = {
             "params": {
                 "query_hash": self.query_hash,
-                "variables": variables
+                "variables": variables#.encode("utf-8").hexdigest()
             },
             "headers": {
                 "X-Instagram-GIS": hashlib.md5(gis.encode("utf-8")).hexdigest(),
@@ -62,15 +69,60 @@ class Scraper:
         }
         return settings
 
+    def get_media_info(self, media_info):
+        """
+            Fill media_info object using it's shortcode for requests.
+            Set longitude, latitude, upload_date and url if it is video,
+            if some of these fields are empty then return None.
+        """
+
+        response = self.proxy_get_request('https://www.instagram.com/p/' + media_info.shortcode)
+        try:   
+            context_match = json.loads(re.search(r'({"@context"(?!</script>).*)\s*</script>', response.text)[1])
+        except TypeError:
+            return None
+            
+        shortcode_media = json.loads(re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', 
+            response.text)[1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
+        if media_info.is_video:        
+            media_info.url = shortcode_media['video_url']
+        else:
+            media_info.width = shortcode_media['dimensions']['width']
+            media_info.height = shortcode_media['dimensions']['height']
+
+        # look for location. Next requests.
+        if 'contentLocation' in context_match:
+            media_info.upload_date = datetime.strptime(context_match['uploadDate'], '%Y-%m-%dT%H:%M:%S')
+            response = self.proxy_get_request(context_match['contentLocation']['mainEntityofPage']['@id'])
+            try:
+                match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response.text)[1]
+            except TypeError:
+                return None
+                
+            location = json.loads(match)['entry_data']['LocationsPage'][0]['graphql']['location']
+            media_info.latitude = location['lat']
+            media_info.longitude = location['lng']
+            return media_info
+        else:
+            return None
+
     def handle_media(self, node):
         media_info = Media_info(shortcode=node['shortcode'])
         if node['is_video']:
             media_info.is_video = True
         else:
             media_info.url = node['display_url']
-        return get_media_info(media_info)
+        return self.get_media_info(media_info)
 
-    def get_multimedia(self, view_limit=100, upload_limit=100, verbose=True):
+    def get_multimedia(self, view_limit=200, upload_limit=100, verbose=True):
+        """
+            Get images and videos from explore page.
+        """
+
+        if view_limit < upload_limit:
+            # todo: define exceptions
+            raise ValueError
+
         multimedia = set()
         hashtag_data = self.init_session()
         viewed_count = 0
@@ -82,15 +134,17 @@ class Scraper:
             edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
             for edge in edge_hashtag_to_media['edges']:
                 viewed_count += 1
+                start_time = time.time()
                 media = self.handle_media(edge['node'])
                 if media:
                     multimedia.add(media)
+                print(time.time() - start_time)
 
             page_info = edge_hashtag_to_media['page_info']
             if page_info['has_next_page']:
                 end_cursor = page_info['end_cursor']
                 settings = self.get_settings(after=end_cursor)
-                response = self.session.get('https://www.instagram.com/graphql/query/', **settings)
+                response = self.proxy_get_request('https://www.instagram.com/graphql/query/', **settings)
                 hashtag_data = json.loads(response.text)['data']['hashtag']
 
                 if verbose:
@@ -105,3 +159,5 @@ class Scraper:
         if verbose:
             print('Successfully. Uploaded data about media.')
         return multimedia
+
+    

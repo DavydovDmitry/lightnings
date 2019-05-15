@@ -23,11 +23,11 @@ def upload_lightnings_db(view_limit=100, upload_limit=100):
     engine = create_engine(database_uri)
     Session = sessionmaker(bind=engine)
     session = Session()
-    old_videos_shortcode = tuple(x.shortcode for x in session.query(Video.shortcode).all())        # video already in database
+    old_videos_shortcode = tuple(x.shortcode for x in session.query(Video.shortcode).all())       # video already in database
     old_images_shortcode = tuple(x.shortcode for x in session.query(Image.shortcode).all())       # images already in database
     lightnings = session.query(Lightning).all()
 
-    scraper = Scraper(tag='lightnings')
+    scraper = Scraper(tag='молния')
     video_count = 0
     image_count = 0
     try:
