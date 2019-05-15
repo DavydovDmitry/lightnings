@@ -44,13 +44,10 @@ def upload_thunders_db(verbose=True):
 
     lightnings = set()
     hashes = set(map(hash, session.query(Lightning).all()))
-    new_hashes = set()
     for file in os.listdir(path_to_jsons):
         with open(path_to_jsons + file) as js:
             content = js.read()
-            for item in json.loads(content)['rs']:
-                
-
+            for item in json.loads(content)['rs']:                
                 try:
                     time_start = datetime.strptime(item['DS'], '%Y-%m-%d %H:%M:%S')
                     time_end = datetime.strptime(item['DE'], '%Y-%m-%d %H:%M:%S')
@@ -76,10 +73,8 @@ def upload_thunders_db(verbose=True):
                     time_end=time_end,
                     quantity=quantity)
                 
-                if lightning.__hash__() not in hashes and \
-                   lightning.__hash__() not in new_hashes:
+                if lightning.__hash__() not in hashes:
                     lightnings.add(lightning)
-                    new_hashes.add(lightning.__hash__())
     try:
         session.add_all(lightnings)
         session.commit()
