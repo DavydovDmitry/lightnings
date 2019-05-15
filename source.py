@@ -12,7 +12,7 @@ if __name__ == "__main__":
         except ValueError as value_error:
             print('Enter number...')
 
-    # upload_thunders_json()
-    # upload_thunders_db()
-    upload_lightnings_db(view_limit=view_limit, upload_limit=100)
+    #upload_thunders_json()
+    #upload_thunders_db()
+    #upload_lightnings_db(view_limit=view_limit, upload_limit=100)
     build_map()

@@ -3,6 +3,7 @@ import re
 import hashlib
 import time
 from datetime import datetime
+import urllib
 
 import requests
 
@@ -54,7 +55,7 @@ class Scraper(Proxy):
             "tag_name": self.tag,
             "first": first,
             "after": after
-        }, ensure_ascii=False) # output not ASCII letters as is
+        }) # output not ASCII letters as is
         gis = "%s:%s" % (self.rhx_gis, variables)
         settings = {
             "params": {
@@ -64,7 +65,7 @@ class Scraper(Proxy):
             "headers": {
                 "X-Instagram-GIS": hashlib.md5(gis.encode("utf-8")).hexdigest(),
                 "X-Requested-With": "XMLHttpRequest",
-                "Referer": self.url
+                "Referer": urllib.parse.quote(self.url)
             }
         }
         return settings
@@ -138,7 +139,8 @@ class Scraper(Proxy):
                 media = self.handle_media(edge['node'])
                 if media:
                     multimedia.add(media)
-                print(time.time() - start_time)
+                print('Time elapsed for media: {:{length}.{prec}>f}'.format(
+                    time.time() - start_time), prec=2, length=6)
 
             page_info = edge_hashtag_to_media['page_info']
             if page_info['has_next_page']:

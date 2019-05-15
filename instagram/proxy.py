@@ -28,17 +28,6 @@ class Proxy:
         return user_agents
 
     def proxy_get_request(self, url, params=None, **kwargs):
-        if 'headers' in kwargs:
-            kwargs['headers'].update({
-                'User-Agent': random.choice(self.user_agents)
-            })
-        else:
-            kwargs['headers'] = {
-                'User-Agent': random.choice(self.user_agents)
-            }
-        if params:
-            params = urllib.parse.urlencode(params)
-
         while True:    
             while self.proxies:
                 proxy = self.proxies[-1]

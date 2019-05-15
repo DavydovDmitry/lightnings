@@ -26,12 +26,15 @@ def upload_lightnings_db(view_limit=100, upload_limit=100):
     old_videos_shortcode = tuple(x.shortcode for x in session.query(Video.shortcode).all())       # video already in database
     old_images_shortcode = tuple(x.shortcode for x in session.query(Image.shortcode).all())       # images already in database
     lightnings = session.query(Lightning).all()
+    session.close()
 
     scraper = Scraper(tag='молния')
     video_count = 0
     image_count = 0
     try:
         for multimedia in scraper.get_multimedia(view_limit=view_limit, upload_limit=upload_limit):
+            # open session only as get media otherwise session time will expire.
+            session = Session()     
             for media in multimedia:
                 for lightning in lightnings:
                     if lightning.time_start - time_limit <= media.upload_date <= lightning.time_end + time_limit:
@@ -60,6 +63,7 @@ def upload_lightnings_db(view_limit=100, upload_limit=100):
                                         image_count += 1
                                     break
             session.commit()
+            session.close()
             print('{:>{prec}} videos were uploaded and {:>{prec}} images were uploaded.'.format(video_count, image_count, prec=3))
     finally:
         session.close()

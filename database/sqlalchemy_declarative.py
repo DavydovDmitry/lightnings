@@ -101,7 +101,7 @@ class Image(Base):
     __tablename__ = 'image'
 
     image_id = Column(Integer, primary_key=True)
-    url = Column(String(200), nullable=False, unique=True)
+    url = Column(String(300), nullable=False, unique=True)
     width = Column(Integer, nullable=False)
     height = Column(Integer, nullable=False)
     shortcode = Column(String(50), nullable=False)
@@ -113,7 +113,7 @@ class Video(Base):
     __tablename__ = 'video'
 
     video_id = Column(Integer, primary_key=True)
-    url = Column(String(200), nullable=False, unique=True)
+    url = Column(String(300), nullable=False, unique=True)
     width = Column(Integer, nullable=False)
     height = Column(Integer, nullable=False)
     shortcode = Column(String(50), nullable=False)
