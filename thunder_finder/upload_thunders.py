@@ -66,12 +66,8 @@ def upload_thunders_db(verbose=True):
                 except ValueError:
                     continue
 
-                longitude = min(longitude_ld, longitude_lu, longitude_rd, longitude_ru) + \
-                            (max(longitude_ld, longitude_lu, longitude_rd, longitude_ru) - \
-                            min(longitude_ld, longitude_lu, longitude_rd, longitude_ru))/2
-                latitude = min(latitude_ld, latitude_lu, latitude_rd, latitude_ru) + \
-                           (max(latitude_ld, latitude_lu, latitude_rd, latitude_ru) - \
-                           min(latitude_ld, latitude_lu, latitude_rd, latitude_ru))/2
+                longitude = longitude_ru
+                latitude = latitude_ru
 
                 lightning = Lightning(
                     longitude=longitude,
