@@ -139,8 +139,8 @@ class Scraper(Proxy):
                 media = self.handle_media(edge['node'])
                 if media:
                     multimedia.add(media)
-                print('Time elapsed for media: {:{length}.{prec}>f}'.format(
-                    time.time() - start_time), prec=2, length=6)
+                print('Time elapsed for media: {:>{length}.{prec}f}'.format(
+                    time.time() - start_time, prec=2, length=6))
 
             page_info = edge_hashtag_to_media['page_info']
             if page_info['has_next_page']:
