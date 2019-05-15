@@ -19,23 +19,13 @@ class Lightning(Base):
     time_end = Column(TIMESTAMP, nullable=False)
     quantity = Column(Integer, nullable=False)
     
-    longitude_ru = Column(Float, nullable=False)
-    latitude_ru = Column(Float, nullable=False)
-    longitude_rd = Column(Float, nullable=False)
-    latitude_rd = Column(Float, nullable=False)
-    longitude_ld = Column(Float, nullable=False)
-    latitude_ld = Column(Float, nullable=False)
-    longitude_lu = Column(Float, nullable=False)
-    latitude_lu = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    latitude = Column(Float, nullable=False)
 
     __table_args__ = (UniqueConstraint(
-        'time_start', 'time_end', 'longitude_ru', 'latitude_ru', 'longitude_rd',
-        'latitude_rd', 'longitude_ld', 'latitude_ld', 'longitude_lu',
-        'latitude_lu', name='uix_lightning'), )     # tuple
+        'time_start', 'time_end', 'longitude', 'latitude', name='uix_lightning'), )     # tuple
 
-    def __init__(self, time_start, time_end, longitude_ru, latitude_ru,
-                 longitude_rd, latitude_rd, longitude_ld, latitude_ld,
-                 longitude_lu, latitude_lu, quantity, lightning_id=None):
+    def __init__(self, time_start, time_end, longitude, latitude, quantity, lightning_id=None):
         self.lightning_id = lightning_id
         if isinstance(time_start, datetime):
             self.time_start = time_start
@@ -47,55 +37,31 @@ class Lightning(Base):
             raise TypeError
         self.quantity = quantity
 
-        self.longitude_ru = longitude_ru
-        self.latitude_ru = latitude_ru
-        self.longitude_rd = longitude_rd
-        self.latitude_rd = latitude_rd
-        self.longitude_ld = longitude_ld
-        self.latitude_ld = latitude_ld
-        self.longitude_lu = longitude_lu
-        self.latitude_lu = latitude_lu
+        self.longitude = longitude
+        self.latitude = latitude
 
     def __eq__(self, o):
         if self.time_start == o.time_start and \
            self.time_end == o.time_end and \
-           self.longitude_ru == o.longitude_ru and \
-           self.latitude_ru == o.latitude_ru and \
-           self.longitude_rd == o.longitude_rd and \
-           self.latitude_rd == o.latitude_rd and \
-           self.longitude_ld == o.longitude_ld and \
-           self.latitude_ld == o.latitude_ld and \
-           self.longitude_lu == o.longitude_lu and \
-           self.latitude_lu == o.latitude_lu:
+           self.longitude == o.longitude and \
+           self.latitude == o.latitude:
            return True
         return False
 
     def __hash__(self):
-        return hash((self.time_start, self.time_end, self.longitude_ru, 
-                     self.latitude_ru, self.longitude_rd, self.latitude_rd,
-                     self.longitude_ld, self.latitude_ld, self.longitude_lu,
-                     self.latitude_lu))
+        return hash((self.time_start, self.time_end, self.longitude, self.latitude))
 
     def __str__(self):
         return \
             'lightning_id: {lightning_id}, quantity: {quantity}, ' \
-            'time_start: {time_start}, time_end: {time_end}, longitude_ru: ' \
-            '{longitude_ru}, latitude_ru: {latitude_ru}, longitude_rd: ' \
-            '{longitude_rd}, latitude_rd: {latitude_rd}, longitude_ld: ' \
-            '{longitude_ld}, latitude_ld: {latitude_ld}, longitude_lu: ' \
-            '{longitude_lu}, latitude_lu: {latitude_lu}'.format(
+            'time_start: {time_start}, time_end: {time_end}, longitude: ' \
+            '{longitude}, latitude: {latitude}'.format(
                 lightning_id = self.lightning_id,
                 quantity = self.quantity,
                 time_start = self.time_start,
-                time_end = self.time_end ,
-                longitude_ru = self.longitude_ru,
-                latitude_ru = self.latitude_ru,
-                longitude_rd = self.longitude_rd,
-                latitude_rd = self.latitude_rd,
-                longitude_ld = self.longitude_ld,
-                latitude_ld = self.latitude_ld,
-                longitude_lu = self.longitude_lu,
-                latitude_lu = self.latitude_lu)
+                time_end = self.time_end,
+                longitude = self.longitude,
+                latitude = self.latitude)
 
 class Image(Base):
     __tablename__ = 'image'

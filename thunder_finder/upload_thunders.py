@@ -44,38 +44,46 @@ def upload_thunders_db(verbose=True):
 
     lightnings = set()
     hashes = set(map(hash, session.query(Lightning).all()))
+    new_hashes = set()
     for file in os.listdir(path_to_jsons):
         with open(path_to_jsons + file) as js:
             content = js.read()
             for item in json.loads(content)['rs']:
-                time_start = item['DS']
-                time_end = item['DE']
+                
 
-                longitude_ru = float(item['p1n'])
-                latitude_ru = float(item['p1t'])
-                longitude_rd = float(item['p2n'])
-                latitude_rd = float(item['p2t'])
-                longitude_ld = float(item['p3n'])
-                latitude_ld = float(item['p3t'])
-                longitude_lu = float(item['p4n'])
-                latitude_lu = float(item['p4t'])
+                try:
+                    time_start = datetime.strptime(item['DS'], '%Y-%m-%d %H:%M:%S')
+                    time_end = datetime.strptime(item['DE'], '%Y-%m-%d %H:%M:%S')
+                    longitude_ru = float(item['p1n'])
+                    latitude_ru = float(item['p1t'])
+                    longitude_rd = float(item['p2n'])
+                    latitude_rd = float(item['p2t'])
+                    longitude_ld = float(item['p3n'])
+                    latitude_ld = float(item['p3t'])
+                    longitude_lu = float(item['p4n'])
+                    latitude_lu = float(item['p4t'])
+                    quantity = int(item['cnt'])
+                except ValueError:
+                    continue
 
-                quantity = int(item['cnt'])
+                longitude = min(longitude_ld, longitude_lu, longitude_rd, longitude_ru) + \
+                            (max(longitude_ld, longitude_lu, longitude_rd, longitude_ru) - \
+                            min(longitude_ld, longitude_lu, longitude_rd, longitude_ru))/2
+                latitude = min(latitude_ld, latitude_lu, latitude_rd, latitude_ru) + \
+                           (max(latitude_ld, latitude_lu, latitude_rd, latitude_ru) - \
+                           min(latitude_ld, latitude_lu, latitude_rd, latitude_ru))/2
+
                 lightning = Lightning(
-                    longitude_ru=longitude_ru,
-                    latitude_ru=latitude_ru,
-                    longitude_rd=longitude_rd,
-                    latitude_rd=latitude_rd,
-                    longitude_ld=longitude_ld,
-                    latitude_ld=latitude_ld,
-                    longitude_lu=longitude_lu,
-                    latitude_lu=latitude_lu,
-                    time_start=datetime.strptime(time_start, '%Y-%m-%d %H:%M:%S'),
-                    time_end=datetime.strptime(time_end, '%Y-%m-%d %H:%M:%S'),
+                    longitude=longitude,
+                    latitude=latitude,
+                    time_start=time_start,
+                    time_end=time_end,
                     quantity=quantity)
                 
-                if lightning.__hash__() not in hashes:
+                if lightning.__hash__() not in hashes and \
+                   lightning.__hash__() not in new_hashes:
                     lightnings.add(lightning)
+                    new_hashes.add(lightning.__hash__())
     try:
         session.add_all(lightnings)
         session.commit()
