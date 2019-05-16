@@ -36,8 +36,8 @@ def build_map():
                 <source src="{url}" type="video/mp4">
             </video>
             """.format(url=video.url, width=video.width, height=video.height)
-        lat = lightning.latitude_ru
-        lon = lightning.longitude_ru
+        lat = lightning.latitude
+        lon = lightning.longitude
         folium.Marker(location=(lat, lon), 
                       icon=folium.Icon(color='blue', icon='film', prefix='fa'),
                       popup=folium.Popup(folium.IFrame(html=html, 
@@ -48,8 +48,8 @@ def build_map():
     for image in images:
         lightning = session.query(Lightning).filter_by(lightning_id=image.lightning_id).first()
         html = '<img src={url} style="width:{width}px;height:{height}px;">'.format(url=image.url, width=image.width, height=image.height)
-        lat = lightning.latitude_ru
-        lon = lightning.longitude_ru
+        lat = lightning.latitude
+        lon = lightning.longitude
         folium.Marker(location=(lat, lon), 
                       icon=folium.Icon(color='blue', icon='camera', prefix='fa'),
                       popup=folium.Popup(folium.IFrame(html=html, 

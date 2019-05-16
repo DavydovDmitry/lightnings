@@ -1,5 +1,6 @@
 import os
 import datetime
+import math
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,8 +10,18 @@ from database.sqlalchemy_declarative import Lightning
 from instagram.scraper import Scraper
 
 
-def upload_lightnings_db(view_limit=100, upload_limit=100):
-    distance_limit = 1
+def calculate_distance(lat_1, lat_2, lon_1, lon_2):
+    lat_1 = lat_1 / 180 * math.pi
+    lat_2 = lat_2 / 180 * math.pi
+    lon_1 = lon_1 / 180 * math.pi
+    lon_2 = lon_2 / 180 * math.pi
+    r = 6371
+    dlon = lon_2-lon_1
+    return r * abs(math.acos(math.sin(lat_1)*math.sin(lat_2) + \
+                             math.cos(lat_1)*math.cos(lat_2)*math.cos(dlon)))
+
+def upload_lightnings_db(view_limit=100, upload_limit=50):
+    distance_limit = 10
     time_limit = datetime.timedelta(minutes=10)
 
     database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
@@ -38,10 +49,10 @@ def upload_lightnings_db(view_limit=100, upload_limit=100):
             for media in multimedia:
                 for lightning in lightnings:
                     if lightning.time_start - time_limit <= media.upload_date <= lightning.time_end + time_limit:
-                        if (lightning.longitude_ru - media.longitude > -distance_limit) and \
-                        (lightning.longitude_ld - media.longitude < distance_limit) and \
-                        (lightning.latitude_ru - media.latitude > -distance_limit) and \
-                        (lightning.latitude_ld - media.latitude < distance_limit):
+                        if calculate_distance(lon_1=lightning.longitude,
+                                              lon_2=media.longitude,
+                                              lat_1=lightning.latitude,
+                                              lat_2=media.latitude) < distance_limit:
                                 if media.is_video:
                                     if media.shortcode not in old_videos_shortcode:
                                         session.add(Video(

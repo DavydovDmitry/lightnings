@@ -34,7 +34,7 @@ class Proxy:
                 try:
                     response = requests.get(url, params=params, proxies={
                         "http": 'socks5://' + proxy
-                    }, **kwargs)
+                    })#, **kwargs)
                     if 300 > response.status_code > 199:
                         return response
                     else:

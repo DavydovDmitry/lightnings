@@ -43,7 +43,7 @@ class Scraper(Proxy):
             response.text,
         )
         shared_data = json.loads(match[1])
-        self.rhx_gis = shared_data['rhx_gis']
+        #self.rhx_gis = shared_data['rhx_gis']
         return shared_data["entry_data"]["TagPage"][0]["graphql"]["hashtag"]
 
     def get_settings(self, after, first=80):
@@ -56,7 +56,8 @@ class Scraper(Proxy):
             "first": first,
             "after": after
         }) # output not ASCII letters as is
-        gis = "%s:%s" % (self.rhx_gis, variables)
+        #gis = "%s:%s" % (self.rhx_gis, variables)
+        gis = variables
         settings = {
             "params": {
                 "query_hash": self.query_hash,
