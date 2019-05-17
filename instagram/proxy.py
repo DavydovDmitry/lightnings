@@ -34,7 +34,7 @@ class Proxy:
                 try:
                     response = requests.get(url, params=params, proxies={
                         "http": 'socks5://' + proxy
-                    })#, **kwargs)
+                    })#, **kwargs)  Previous version...
                     if 300 > response.status_code > 199:
                         return response
                     else:
@@ -43,7 +43,6 @@ class Proxy:
                 except requests.exceptions.ConnectionError:
                     self.proxies.pop()
                 except UnicodeEncodeError:
-                    # 'latin-1' codec can't encode characters in position 39-44: ordinal not in range(256)
                     return None
             self.proxies = self.get_proxies()
 

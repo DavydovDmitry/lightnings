@@ -6,6 +6,6 @@
 export $(cat ./config/local.env)
 
 source venv/bin/activate
-python database/sqlalchemy_declarative.py
+#python database/sqlalchemy_declarative.py
 python source.py
 deactivate

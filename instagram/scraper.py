@@ -13,7 +13,9 @@ from .proxy import Proxy
 
 class Scraper(Proxy):
     """
-        Scrapping explore page
+        Scrapping explore page.
+        Inherit from Proxy to make requests from different IP and using 
+        different User-Agents.
     """
 
     def __init__(self, tag):
@@ -35,6 +37,7 @@ class Scraper(Proxy):
     def init_session(self):
         """
             First request to get requests settings.
+            Also getting first part of images.
         """
 
         response = self.proxy_get_request(self.url)
@@ -48,20 +51,25 @@ class Scraper(Proxy):
 
     def get_settings(self, after, first=80):
         """
-            Prepare requests
+            Prepare headers and params for request that upload next part 
+            of explore page.
+
+            Attention! Last time Instagram don't pass rhx_gis and 
+            successfuly response on requests without headers. 
         """
 
         variables = json.dumps({
             "tag_name": self.tag,
             "first": first,
             "after": after
-        }) # output not ASCII letters as is
-        #gis = "%s:%s" % (self.rhx_gis, variables)
+        })        
         gis = variables
+        # Used in previous version. Now there is no need...
+        # gis = "%s:%s" % (self.rhx_gis, variables)
         settings = {
             "params": {
                 "query_hash": self.query_hash,
-                "variables": variables#.encode("utf-8").hexdigest()
+                "variables": variables
             },
             "headers": {
                 "X-Instagram-GIS": hashlib.md5(gis.encode("utf-8")).hexdigest(),
@@ -92,7 +100,7 @@ class Scraper(Proxy):
             media_info.width = shortcode_media['dimensions']['width']
             media_info.height = shortcode_media['dimensions']['height']
 
-        # look for location. Next requests.
+        # Look for location. Next request.
         if 'contentLocation' in context_match:
             media_info.upload_date = datetime.strptime(context_match['uploadDate'], '%Y-%m-%dT%H:%M:%S')
             response = self.proxy_get_request(context_match['contentLocation']['mainEntityofPage']['@id'])

@@ -6,8 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import folium
 
-from database.sqlalchemy_declarative import Lightning
-from database.sqlalchemy_declarative import Image, Video
+from database import Lightning, Image, Video
 
 
 def build_map():

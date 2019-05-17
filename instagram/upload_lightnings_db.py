@@ -5,8 +5,7 @@ import math
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database.sqlalchemy_declarative import Video, Image
-from database.sqlalchemy_declarative import Lightning 
+from database import Video, Image, Lightning 
 from instagram.scraper import Scraper
 
 
@@ -21,7 +20,7 @@ def calculate_distance(lat_1, lat_2, lon_1, lon_2):
                              math.cos(lat_1)*math.cos(lat_2)*math.cos(dlon)))
 
 def upload_lightnings_db(view_limit=100, upload_limit=50):
-    distance_limit = 10
+    distance_limit = 20
     time_limit = datetime.timedelta(minutes=10)
 
     database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{

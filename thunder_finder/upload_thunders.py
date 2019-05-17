@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy
 
-from database.sqlalchemy_declarative import Lightning
+from database import Lightning
 
 
 def upload_thunders_json(verbose=True):
