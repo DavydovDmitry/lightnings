@@ -31,13 +31,7 @@ def upload_thunders_db(verbose=True):
 
     path_to_jsons = os.path.dirname(os.path.abspath(__file__)) + '/thunder_jsons/'
 
-    database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
-        'DB_USER': os.environ['DB_USER'],
-        'DB_PASSWORD': os.environ['DB_PASSWORD'],
-        'DB_IP': os.environ['DB_IP'],
-        'DB_PORT': os.environ['DB_PORT'],
-        'DB_NAME': os.environ['DB_NAME']
-    })
+    database_uri = os.environ['DB_URI']
     engine = create_engine(database_uri)
     Session = sessionmaker(bind=engine)
     session = Session()

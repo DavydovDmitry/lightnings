@@ -63,18 +63,10 @@ class Scraper(Proxy):
             "first": first,
             "after": after
         })        
-        gis = variables
-        # Used in previous version. Now there is no need...
-        # gis = "%s:%s" % (self.rhx_gis, variables)
         settings = {
             "params": {
                 "query_hash": self.query_hash,
                 "variables": variables
-            },
-            "headers": {
-                "X-Instagram-GIS": hashlib.md5(gis.encode("utf-8")).hexdigest(),
-                "X-Requested-With": "XMLHttpRequest",
-                "Referer": urllib.parse.quote(self.url)
             }
         }
         return settings

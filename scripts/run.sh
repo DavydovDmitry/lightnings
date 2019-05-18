@@ -5,8 +5,12 @@
 #cd ../
 
 export $(cat ./local.env)
-./scripts/dump.sh > database/dumps/`date +%Y-%m-%d`.dump
+DB_URI=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}/${DB_NAME}
 
-#source venv/bin/activate
-#python source.py
-#deactivate
+# upload media
+source venv/bin/activate
+python source.py
+deactivate
+
+# dump current db state
+./scripts/dump.sh > database/dumps/`date +%Y-%m-%d`.dump

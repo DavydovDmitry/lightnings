@@ -23,13 +23,7 @@ def upload_lightnings_db(view_limit=100, upload_limit=50):
     distance_limit = 20
     time_limit = datetime.timedelta(minutes=10)
 
-    database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
-        'DB_USER': os.environ['DB_USER'],
-        'DB_PASSWORD': os.environ['DB_PASSWORD'],
-        'DB_IP': os.environ['DB_IP'],
-        'DB_PORT': os.environ['DB_PORT'],
-        'DB_NAME': os.environ['DB_NAME']
-    })
+    database_uri = os.environ['DB_URI']
     engine = create_engine(database_uri)
     Session = sessionmaker(bind=engine)
     session = Session()

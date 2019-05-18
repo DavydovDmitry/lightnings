@@ -88,12 +88,6 @@ class Video(Base):
     lightning = relationship(Lightning)
 
  
-database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
-        'DB_USER': os.environ['DB_USER'],
-        'DB_PASSWORD': os.environ['DB_PASSWORD'],
-        'DB_IP': os.environ['DB_IP'],
-        'DB_PORT': os.environ['DB_PORT'],
-        'DB_NAME': os.environ['DB_NAME']
-    })
+database_uri = os.environ['DB_URI']
 engine = create_engine(database_uri)
 Base.metadata.create_all(engine)

@@ -13,13 +13,7 @@ def build_map():
     width_margin = 20
     height_margin = 20
 
-    database_uri = 'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_IP}:{DB_PORT}/{DB_NAME}'.format(**{
-        'DB_USER': os.environ['DB_USER'],
-        'DB_PASSWORD': os.environ['DB_PASSWORD'],
-        'DB_IP': os.environ['DB_IP'],
-        'DB_PORT': os.environ['DB_PORT'],
-        'DB_NAME': os.environ['DB_NAME']
-    })
+    database_uri = os.environ['DB_URI']
     engine = create_engine(database_uri)
     Session = sessionmaker(bind=engine)
     session = Session()
