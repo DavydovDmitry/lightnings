@@ -1,5 +1,8 @@
 #!/usr/bin/expect
 
+# don't output "Password: " ...
+log_user 0
+
 spawn pg_dump \
 --dbname=$env(DB_NAME) \
 --host=$env(DB_IP) \

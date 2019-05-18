@@ -7,6 +7,6 @@
 export $(cat ./local.env)
 ./scripts/dump.sh > database/dumps/`date +%Y-%m-%d`.dump
 
-source venv/bin/activate
-python source.py
-deactivate
+#source venv/bin/activate
+#python source.py
+#deactivate
