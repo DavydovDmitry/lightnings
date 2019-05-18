@@ -14,8 +14,7 @@ from .proxy import Proxy
 class Scraper(Proxy):
     """
         Scrapping explore page.
-        Inherit from Proxy to make requests from different IP and using 
-        different User-Agents.
+        Inherit from Proxy to make requests from different IP
     """
 
     def __init__(self, tag):
@@ -23,7 +22,6 @@ class Scraper(Proxy):
         self.rhx_gis = None
         self.query_hash = self.__get_query_hash()
         self.proxies = self.get_proxies()
-        self.user_agents = self.get_user_agents()
         
         self.tag = tag
         self.url = 'https://www.instagram.com/explore/tags/' + tag

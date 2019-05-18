@@ -3,9 +3,6 @@
 export $(cat ./local.env)
 DB_URI=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}/${DB_NAME}
 
-# run database
-docker-compose up -d
-
 # upload media
 source venv/bin/activate
 python database/sqlalchemy_declarative.py
@@ -19,4 +16,3 @@ then
 fi
 ./scripts/dump.sh > database/dumps/`date +%Y-%m-%d`.dump
 
-docker-compose stop
