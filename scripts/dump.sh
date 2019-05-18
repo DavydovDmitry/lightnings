@@ -1,9 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/expect
 
-export $(cat ./config/local.env)
+spawn pg_dump \
+--dbname=$env(DB_NAME) \
+--host=$env(DB_IP) \
+--port=$env(DB_PORT) \
+--username=$env(DB_USER) 
 
-pg_dump \
---dbname=$DB_NAME \
---host=$DB_IP \
---port=$DB_PORT \
---username=$DB_USER > database/db.dump
+expect "Password: "
+send "$env(DB_PASSWORD)\n"
+interact

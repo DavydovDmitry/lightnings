@@ -2,6 +2,8 @@ version: '3.6'
 
 services:
   database:
+    env_file:
+      - local.env
     hostname: database
     image: postgres:latest
     container_name: "lightnings_postgres"
