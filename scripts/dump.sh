@@ -2,11 +2,11 @@
 
 log_user 0
 
-spawn psql \
+spawn pg_dump \
 --dbname=$env(DB_NAME) \
 --host=$env(DB_IP) \
 --port=$env(DB_PORT) \
---username=$env(DB_USER) < database/dumps/2019-05-17.dump
+--username=$env(DB_USER) 
 
 expect "Password: "
 send "$env(DB_PASSWORD)\n"

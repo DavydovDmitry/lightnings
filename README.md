@@ -4,6 +4,7 @@ Linked repositories:
 
 Execution:
 cd lightnings_logic
+export $(cat local.env)
 docker-compose up
 # if you have dump of database
 # ./scripts/restore.sh

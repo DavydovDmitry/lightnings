@@ -14,9 +14,8 @@ def calculate_distance(lat_1, lat_2, lon_1, lon_2):
     lat_2 = lat_2 / 180 * math.pi
     lon_1 = lon_1 / 180 * math.pi
     lon_2 = lon_2 / 180 * math.pi
-    r = 6371
-    dlon = lon_2-lon_1
-    return r * abs(math.acos(math.sin(lat_1)*math.sin(lat_2) + \
+    dlon = lon_2 - lon_1
+    return 6371 * abs(math.acos(math.sin(lat_1)*math.sin(lat_2) + \
                              math.cos(lat_1)*math.cos(lat_2)*math.cos(dlon)))
 
 def upload_lightnings_db(view_limit=100, upload_limit=50):

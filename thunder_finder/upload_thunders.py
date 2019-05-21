@@ -47,12 +47,6 @@ def upload_thunders_db(verbose=True):
                     time_end = datetime.strptime(item['DE'], '%Y-%m-%d %H:%M:%S')
                     longitude_ru = float(item['p1n'])
                     latitude_ru = float(item['p1t'])
-                    longitude_rd = float(item['p2n'])
-                    latitude_rd = float(item['p2t'])
-                    longitude_ld = float(item['p3n'])
-                    latitude_ld = float(item['p3t'])
-                    longitude_lu = float(item['p4n'])
-                    latitude_lu = float(item['p4t'])
                     quantity = int(item['cnt'])
                 except ValueError:
                     continue
