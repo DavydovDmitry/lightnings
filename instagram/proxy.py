@@ -23,7 +23,7 @@ class Proxy:
 
     def proxy_get_request(self, url, params=None, **kwargs):
         """
-            Return response for request. 
+            Return response for request. Using one of proxy addresses.
         """
 
         while True:    

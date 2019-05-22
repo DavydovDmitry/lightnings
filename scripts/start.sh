@@ -5,7 +5,6 @@ export DB_URI=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT
 
 # upload media
 source venv/bin/activate
-#python database/sqlalchemy_declarative.py
 python source.py
 deactivate
 
