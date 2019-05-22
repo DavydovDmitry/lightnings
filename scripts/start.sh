@@ -4,9 +4,7 @@ export $(cat ./local.env)
 export DB_URI=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}/${DB_NAME}
 
 # upload media
-source venv/bin/activate
-python source.py
-deactivate
+pipenv run python source.py
 
 # dump current database state
 if !([ -d "./database/dumps" ])

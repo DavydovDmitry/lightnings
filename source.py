@@ -28,4 +28,5 @@ if __name__ == "__main__":
         upload_lightnings_db(view_limit=view_limit)
         build_map()
 
+    #update_data()
     run_server()

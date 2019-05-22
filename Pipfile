@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+sqlalchemy = "*"
+tornado = "*"
+beautifulsoup4 = "*"
+folium = "*"
+numpy = "*"
+psycopg2 = "*"
+urllib3 = "*"
+
+[requires]
+python_version = "3.7"
