@@ -4,13 +4,11 @@ from datetime import datetime
 
 from sqlalchemy import Column, ForeignKey, UniqueConstraint
 from sqlalchemy import Integer, String, TIMESTAMP, Float
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
+
+from . import Base
 
 
-Base = declarative_base()
- 
 class Lightning(Base):
     __tablename__ = 'lightning'
 
@@ -62,32 +60,3 @@ class Lightning(Base):
                 time_end = self.time_end,
                 longitude = self.longitude,
                 latitude = self.latitude)
-
-class Image(Base):
-    __tablename__ = 'image'
-
-    image_id = Column(Integer, primary_key=True)
-    url = Column(String(300), nullable=False, unique=True)
-    width = Column(Integer, nullable=False)
-    height = Column(Integer, nullable=False)
-    shortcode = Column(String(50), nullable=False)
-    lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
-
-    lightning = relationship(Lightning)
-
-class Video(Base):
-    __tablename__ = 'video'
-
-    video_id = Column(Integer, primary_key=True)
-    url = Column(String(300), nullable=False, unique=True)
-    width = Column(Integer, nullable=False)
-    height = Column(Integer, nullable=False)
-    shortcode = Column(String(50), nullable=False)
-    lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
-
-    lightning = relationship(Lightning)
-
- 
-database_uri = os.environ['DB_URI']
-engine = create_engine(database_uri)
-Base.metadata.create_all(engine)
