@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "lightnings"
+version = "0.1.0"
+description = ""
+authors = ["davydovdmitry <davydofdmitry@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sqlalchemy = "^1.3.19"
+psycopg2-binary = "^2.8.5"
+bs4 = "^0.0.1"
+folium = "^0.11.0"
+
+[tool.poetry.dev-dependencies]
+jupyterlab = "^2.2.6"
+requests = "^2.24.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -5,8 +5,8 @@ import math
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database import Video, Image, Lightning 
-from instagram.scraper import Scraper
+from server.database import Video, Image, Lightning
+from server.instagram.scraper import Scraper
 
 
 def calculate_distance(lat_1, lat_2, lon_1, lon_2):

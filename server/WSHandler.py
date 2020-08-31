@@ -2,7 +2,7 @@ import json
 
 import tornado.websocket
 
-from database import Lightning, Image, Video
+from server.database import Lightning, Image, Video
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):

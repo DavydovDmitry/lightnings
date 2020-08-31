@@ -1,10 +1,9 @@
-from sqlalchemy import Column, ForeignKey, UniqueConstraint
-from sqlalchemy import Integer, String, TIMESTAMP, Float
+from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 
-from . import Lightning
-from . import Base
+from . import Lightning, Base
+
 
 class Image(Base):
     __tablename__ = 'image'
@@ -17,6 +16,7 @@ class Image(Base):
     lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
 
     lightning = relationship(Lightning)
+
 
 class Video(Base):
     __tablename__ = 'video'

@@ -1,6 +1,3 @@
-import random
-import urllib
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -18,7 +15,10 @@ class Proxy:
         soup = BeautifulSoup(response.text, 'html.parser')
         table = soup.findAll('div', {'class': 'table-responsive'})
 
-        proxies = [':'.join([x.contents[0] for x in row.findAll('td')[:2]]) for row in table[0].contents[0].contents[1].children]
+        proxies = [
+            ':'.join([x.contents[0] for x in row.findAll('td')[:2]])
+            for row in table[0].contents[0].contents[1].children
+        ]
         return proxies
 
     def proxy_get_request(self, url, params=None, **kwargs):
@@ -26,13 +26,15 @@ class Proxy:
             Return response for request. Using one of proxy addresses.
         """
 
-        while True:    
+        while True:
             while self.proxies:
                 proxy = self.proxies[-1]
                 try:
-                    response = requests.get(url, params=params, proxies={
-                        "http": 'socks5://' + proxy
-                    }, **kwargs)
+                    response = requests.get(
+                        url,
+                        params=params,
+                        proxies={"http": 'socks5://' + proxy},
+                        **kwargs)
                     if 300 > response.status_code > 199:
                         return response
                     else:
