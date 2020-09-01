@@ -24,12 +24,14 @@ class Crawler(Proxy):
         self.media = dict()
 
     def _get_query_hash(self):
-        responce = self.request(
-            'https://www.instagram.com/static/bundles/es6/Consumer.js/175fefa0cc6c.js')
-        match = re.findall('},queryId:"[a-zA-Z0-9]*"', responce.text)
-        return match[0].split('"')[1]
+        url = 'https://www.instagram.com/static/bundles/es6/TagPageContainer.js/80d5aeb6e1ce.js'
+        responce = self.request(url)
+        match = re.findall('queryId:"[a-zA-Z0-9]*"', responce.text)
+        if len(match) != 1:
+            raise ValueError(f'Found {len(match)} matches...\n {match}')
+        return match[0].split('"')[-2]
 
-    def init_session(self):
+    def first_request(self):
         """First request to get requests settings.
 
         Also getting first part of images.
@@ -44,7 +46,7 @@ class Crawler(Proxy):
         #self.rhx_gis = shared_data['rhx_gis']
         return shared_data["entry_data"]["TagPage"][0]["graphql"]["hashtag"]
 
-    def get_settings(self, after, first=80):
+    def get_request_params(self, after, first=80):
         """Prepare headers and params for request that upload next part
         of explore page.
 
@@ -118,19 +120,20 @@ class Crawler(Proxy):
         multimedia = set()
         viewed_count = 0
 
-        hashtag_data = self.init_session()
+        hashtag_data = self.first_request()
         while viewed_count < view_limit:
             edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
             for edge in edge_hashtag_to_media['edges']:
                 viewed_count += 1
-                # media = self.extract_media_info(edge['node'])
-                # if media:
-                #     multimedia.add(media)
-                #
+                media = self.extract_media_info(edge['node'])
+                if media:
+                    multimedia.add(media)
+                    logging.info(f'Extract {media.url}')
+
             page_info = edge_hashtag_to_media['page_info']
             if page_info['has_next_page']:
                 end_cursor = page_info['end_cursor']
-                settings = self.get_settings(after=end_cursor)
+                settings = self.get_request_params(after=end_cursor)
                 response = self.request('https://www.instagram.com/graphql/query/', **settings)
                 hashtag_data = json.loads(response.text)['data']['hashtag']
 
