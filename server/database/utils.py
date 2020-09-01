@@ -1,6 +1,7 @@
 import os
 
 from sqlalchemy import create_engine
+from sqlalchemy.orm.session import sessionmaker
 
 from . import Base
 
@@ -19,3 +20,17 @@ def create_db_tables():
     """Create database tables"""
 
     Base.metadata.create_all(get_engine())
+
+
+SessionFactory = sessionmaker(bind=get_engine())
+
+
+class Session:
+    def __init__(self, *args, **kwargs):
+        self.session = SessionFactory(*args, **kwargs)
+
+    def __enter__(self):
+        return self.session
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.session.close()
