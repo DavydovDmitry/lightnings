@@ -1,7 +1,9 @@
 import os
+import sys
+import pathlib
 
 
-def export_env(env_file):
+def export_env(env_file: pathlib.Path):
     """Export environment variables"""
 
     # todo: error handling
@@ -11,3 +13,7 @@ def export_env(env_file):
             if line and line[0] != '#':
                 key, value = line.split('=')
                 os.environ[key] = value
+
+
+env_file = pathlib.Path(sys.argv[0]).absolute().parent.joinpath('.env')
+export_env(env_file=env_file)
