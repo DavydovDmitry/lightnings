@@ -1,5 +1,5 @@
 
-class Media_info:
+class MediaInfo:
 
     def __init__(self, shortcode, latitude=None, longitude=None, 
                  upload_date=None, url=None, is_video = None, width=480, 
