@@ -1,148 +1,173 @@
-import json
-import re
+import asyncio
 from datetime import datetime
+import json
 import logging
-from typing import Dict
+import re
+from typing import List
+
+import aiohttp
 
 from .mediainfo import MediaInfo
-from .proxy import Proxy
 
 
-class Crawler(Proxy):
-    """to crawl explore page
-
-    Inherit from Proxy to make requests from different IP
-    """
-    def __init__(self, tag):
-        super().__init__()
-        self.rhx_gis = None
-        self.query_hash = self._get_query_hash()
-        self.proxies = self._get_proxies()
-
+class Crawler:
+    def __init__(self, tag: str):
         self.tag = tag
-        self.url = 'https://www.instagram.com/explore/tags/' + tag
-        self.media = dict()
+        self.explore_page_url = 'https://www.instagram.com/explore/tags/' + tag
 
-    def _get_query_hash(self):
-        url = 'https://www.instagram.com/static/bundles/es6/TagPageContainer.js/80d5aeb6e1ce.js'
-        responce = self.request(url)
-        match = re.findall('queryId:"[a-zA-Z0-9]*"', responce.text)
+        self.query_hash = None
+
+        self.task_queue = asyncio.Queue()
+        self.results_queue = asyncio.Queue()
+
+    @staticmethod
+    async def _get_query_hash(session):
+        query_id_url = 'https://www.instagram.com/static/bundles/es6/TagPageContainer.js/80d5aeb6e1ce.js'
+
+        async with session.get(query_id_url) as response:
+            response_text = await response.text()
+
+        match = re.findall('queryId:"[a-zA-Z0-9]*"', response_text)
         if len(match) != 1:
             raise ValueError(f'Found {len(match)} matches...\n {match}')
         return match[0].split('"')[-2]
 
-    def first_request(self):
-        """First request to get requests settings.
+    async def first_request(self, session):
+        """First look on explore page
 
-        Also getting first part of images.
+        Prepare query data for later requests and collect media
         """
 
-        response = self.request(self.url)
+        self.query_hash = await self._get_query_hash(session)
+        async with session.get(self.explore_page_url) as response:
+            response_text = await response.text()
+
         match = re.search(
             r"<script[^>]*>window._sharedData[ ]*=[ ]*((?!</script>).*);</script>",
-            response.text,
+            response_text,
         )
         shared_data = json.loads(match[1])
-        #self.rhx_gis = shared_data['rhx_gis']
         return shared_data["entry_data"]["TagPage"][0]["graphql"]["hashtag"]
 
-    def get_request_params(self, after, first=80):
-        """Prepare headers and params for request that upload next part
-        of explore page.
+    def _get_url_parameters(self, after: str, first=80):
+        """Prepare header to scroll explore page"""
 
-        Attention! Last time Instagram don't pass rhx_gis and
-        successfully response on requests without headers.
-        """
-
-        settings = {
-            "params": {
-                "query_hash": self.query_hash,
-                "variables": json.dumps({
-                    "tag_name": self.tag,
-                    "first": first,
-                    "after": after
-                })
-            }
-        }
-        return settings
-
-    def extract_media_info(self, node: Dict) -> MediaInfo:
-        media_info = MediaInfo(shortcode=node['shortcode'])
-        if node['is_video']:
-            media_info.is_video = True
-        else:
-            media_info.url = node['display_url']
-
-        response = self.request('https://www.instagram.com/p/' + media_info.shortcode)
         try:
-            context_match = json.loads(
-                re.search(r'({"@context"(?!</script>).*)\s*</script>', response.text)[1])
-        except TypeError:
-            return
+            self.query_hash
+        except AttributeError as e:
+            raise AttributeError(
+                'Query hash not found. It should be set during first request...') from e
 
-        shortcode_media = json.loads(
-            re.search(
-                r'_sharedData\s*=\s*((?!</script>).*);</script>',
-                response.text)[1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
-        if media_info.is_video:
-            media_info.url = shortcode_media['video_url']
-        else:
-            media_info.width = shortcode_media['dimensions']['width']
-            media_info.height = shortcode_media['dimensions']['height']
+        params = {
+            "query_hash": self.query_hash,
+            "variables": json.dumps({
+                "tag_name": self.tag,
+                "first": first,
+                "after": after
+            })
+        }
+        return params
 
-        # Look for location. Next request.
-        if 'contentLocation' in context_match:
-            media_info.upload_date = datetime.strptime(context_match['uploadDate'],
-                                                       '%Y-%m-%dT%H:%M:%S')
-            response = self.request(
-                context_match['contentLocation']['mainEntityofPage']['@id'])
-            try:
-                match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>',
-                                  response.text)[1]
-            except TypeError:
-                return
+    async def extract_media_info(self):
+        async with aiohttp.ClientSession() as session:
+            while True:
+                node = await self.task_queue.get()
 
-            location = json.loads(
-                match)['entry_data']['LocationsPage'][0]['graphql']['location']
-            media_info.latitude = location['lat']
-            media_info.longitude = location['lng']
-            return media_info
-        else:
-            return
+                # crawling is over
+                if node is None:
+                    return
 
-    def gather_multimedia(self, view_limit: int = 200, upload_limit: int = 100):
-        """Get images and videos from explore page"""
+                media_info = MediaInfo(shortcode=node['shortcode'])
+                if node['is_video']:
+                    media_info.is_video = True
+                else:
+                    media_info.url = node['display_url']
 
-        if view_limit < upload_limit:
-            # todo: define exceptions
-            raise ValueError
+                async with session.get('https://www.instagram.com/p/' +
+                                       media_info.shortcode) as r:
+                    response = await r.text()
+                    try:
+                        context_match = json.loads(
+                            re.search(r'({"@context"(?!</script>).*)\s*</script>',
+                                      response)[1])
+                    except TypeError:
+                        continue
 
-        multimedia = set()
-        viewed_count = 0
+                shortcode_media = json.loads(
+                    re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response)
+                    [1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
+                if media_info.is_video:
+                    media_info.url = shortcode_media['video_url']
+                else:
+                    media_info.width = shortcode_media['dimensions']['width']
+                    media_info.height = shortcode_media['dimensions']['height']
 
-        hashtag_data = self.first_request()
-        while viewed_count < view_limit:
-            edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
-            for edge in edge_hashtag_to_media['edges']:
-                viewed_count += 1
-                media = self.extract_media_info(edge['node'])
-                if media:
-                    multimedia.add(media)
-                    logging.info(f'Extract {media.url}')
+                # Look for location. Next request.
+                if 'contentLocation' in context_match:
+                    media_info.upload_date = datetime.strptime(context_match['uploadDate'],
+                                                               '%Y-%m-%dT%H:%M:%S')
+                    async with session.get(
+                            context_match['contentLocation']['mainEntityofPage']['@id']) as r:
+                        response = await r.text()
+                        try:
+                            match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>',
+                                              response)[1]
+                        except TypeError:
+                            continue
 
-            page_info = edge_hashtag_to_media['page_info']
-            if page_info['has_next_page']:
-                end_cursor = page_info['end_cursor']
-                settings = self.get_request_params(after=end_cursor)
-                response = self.request('https://www.instagram.com/graphql/query/', **settings)
-                hashtag_data = json.loads(response.text)['data']['hashtag']
+                    location = json.loads(
+                        match)['entry_data']['LocationsPage'][0]['graphql']['location']
+                    media_info.latitude = location['lat']
+                    media_info.longitude = location['lng']
+                    # logging.info(f'Extract location of: {media_info.url}')
+                    await self.results_queue.put(media_info)
 
-                logging.info(
-                    f'{len(multimedia):>{6}} media were uploaded. Last end_cursor: {end_cursor}'
-                )
-                if len(multimedia) > upload_limit:
-                    yield multimedia
-            else:
-                break
-        logging.info('Successfully. Uploaded data about media.')
-        return multimedia
+    async def scroll_page(self, view_limit: int):
+        """Scroll page and put tasks to task queue"""
+
+        viewed_media = 0
+        async with aiohttp.ClientSession() as session:
+            while viewed_media < view_limit:
+                if viewed_media == 0:
+                    hashtag_data = await self.first_request(session)
+                else:
+                    async with session.get(
+                            'https://www.instagram.com/graphql/query/',
+                            params=self._get_url_parameters(after=end_cursor)) as response:
+                        response_text = await response.text()
+                    hashtag_data = json.loads(response_text)['data']['hashtag']
+
+                # put tasks
+                nodes = []
+                edge_hashtag_to_media = hashtag_data['edge_hashtag_to_media']
+                for edge in edge_hashtag_to_media['edges']:
+                    node = edge['node']
+                    nodes.append(node)
+                    await self.task_queue.put(node)
+                logging.info(f'Handle {len(nodes)} media')
+                viewed_media += len(nodes)
+
+                # prepare to next requests
+                end_cursor = edge_hashtag_to_media['page_info']['end_cursor']
+
+    async def schedule_crawling(self, workers_num: int, view_limit: int):
+        await self.scroll_page(view_limit=view_limit)
+
+        for _ in range(workers_num):
+            await self.task_queue.put(None)
+
+        while not self.task_queue.empty():
+            await asyncio.sleep(1)
+
+    def gather_media(self, workers_num=10, view_limit=3000) -> List[MediaInfo]:
+        loop = asyncio.get_event_loop()
+        scroll_page_task = loop.create_task(
+            self.schedule_crawling(workers_num=workers_num, view_limit=view_limit))
+        for _ in range(workers_num):
+            loop.create_task(self.extract_media_info())
+        loop.run_until_complete(scroll_page_task)
+
+        results = []
+        while not self.results_queue.empty():
+            results.append(self.results_queue.get_nowait())
+        return results

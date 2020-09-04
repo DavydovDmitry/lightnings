@@ -6,7 +6,7 @@ from sqlalchemy import Integer, TIMESTAMP, Float
 from . import Base
 
 
-class Lightning(Base):
+class Thunder(Base):
     __tablename__ = 'lightning'
 
     lightning_id = Column(Integer, primary_key=True)

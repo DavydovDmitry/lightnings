@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import relationship
 
-from . import Lightning, Base
+from . import Thunder, Base
 
 
 class Image(Base):
@@ -15,7 +15,7 @@ class Image(Base):
     shortcode = Column(String(50), nullable=False)
     lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
 
-    lightning = relationship(Lightning)
+    lightning = relationship(Thunder)
 
 
 class Video(Base):
@@ -28,4 +28,4 @@ class Video(Base):
     shortcode = Column(String(50), nullable=False)
     lightning_id = Column(Integer, ForeignKey('lightning.lightning_id'))
 
-    lightning = relationship(Lightning)
+    lightning = relationship(Thunder)
