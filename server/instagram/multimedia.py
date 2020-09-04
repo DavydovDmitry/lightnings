@@ -1,4 +1,4 @@
-class MediaInfo:
+class Multimedia:
     def __init__(self,
                  shortcode: str,
                  latitude=None,

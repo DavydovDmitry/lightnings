@@ -61,5 +61,5 @@ def get_thunders_from_dumps(start_date: date = None) -> Set[Thunder]:
                             time_start=time_start,
                             time_end=time_end,
                             quantity=quantity))
-    logging.info(f'Have read thunderstorms data from {read_files_count} files.')
+    logging.info(f'Have read thunderstorms data for {read_files_count} days.')
     return thunderstorms

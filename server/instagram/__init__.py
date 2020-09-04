@@ -3,3 +3,4 @@
 """
 
 from .crawler import Crawler
+from .database import load_media2db
