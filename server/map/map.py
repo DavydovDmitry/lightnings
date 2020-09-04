@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import folium
 
-from server.database import Lightning, Image, Video
+from server.database import Thunder, Image, Video
 
 
 def build_map():
@@ -23,13 +23,13 @@ def build_map():
 
     videos = session.query(Video).all()
     for video in videos:
-        lightning = session.query(Lightning).filter_by(
+        lightning = session.query(Thunder).filter_by(
             lightning_id=video.lightning_id).first()
         html = """
             <video width="{width}px" height="{height}px" controls>
                 <source src="{url}" type="video/mp4">
             </video>
-            """.format(url=video.url, width=video.width, height=video.height)
+            """.format(url=video.explore_page_url, width=video.width, height=video.height)
         lat = lightning.latitude
         lon = lightning.longitude
         folium.Marker(location=(lat, lon),
@@ -42,10 +42,10 @@ def build_map():
 
     images = session.query(Image).all()
     for image in images:
-        lightning = session.query(Lightning).filter_by(
+        lightning = session.query(Thunder).filter_by(
             lightning_id=image.lightning_id).first()
         html = '<img src={url} style="width:{width}px;height:{height}px;">'.format(
-            url=image.url, width=image.width, height=image.height)
+            url=image.explore_page_url, width=image.width, height=image.height)
         lat = lightning.latitude
         lon = lightning.longitude
         folium.Marker(location=(lat, lon),
