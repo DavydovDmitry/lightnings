@@ -1,15 +1,15 @@
-Execution:
+# Lightnings
+This project build a map of lightnings with multimedia (images and videos) from Instagram.
+
+Essential processing stages:
+- collect locations and time of thinderstorms from [Thunderfinder](http://lightnings.ru/);
+- collect multimedia from [Instagram](https://www.instagram.com/explore/tags/%D0%BC%D0%BE%D0%BB%D0%BD%D0%B8%D1%8F/):
+    - collect shortcodes of multimedia by tag;
+    - collect time and location of multimedia;
+- display on map icons of lightnings (on click multimedia) if time and location from **Instagram** and from **Thunderfinder** are **the same**.  
+
+### Execution
 ```shell script
-export $(cat local.env)
+export $(cat local.env) &&
 docker-compose up
-./scripts/start.sh
-```
-
-To restore dump of database
-```shell script
-./scripts/restore.sh
-```
-
-```shell script
-docker-compose run --service-ports database
 ```
