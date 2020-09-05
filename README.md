@@ -1,5 +1,5 @@
 # Lightnings
-This project build a map of lightnings with multimedia (images and videos) from Instagram.
+This project build a map of thunderstorms with multimedia (images and videos) from Instagram.
 
 Essential processing stages:
 - collect locations and time of thinderstorms from [Thunderfinder](http://lightnings.ru/);
