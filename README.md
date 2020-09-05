@@ -2,7 +2,7 @@
 This project build a map of lightnings with multimedia (images and videos) from Instagram.
 
 Essential processing stages:
-- collect locations and time of thinderstorms from [thunderfinder site](http://lightnings.ru/);
+- collect locations and time of thinderstorms from [thunderfinder](http://lightnings.ru/);
 - collect multimedia from [Instagram](https://www.instagram.com/explore/tags/%D0%BC%D0%BE%D0%BB%D0%BD%D0%B8%D1%8F/):
     - collect shortcodes of multimedia by tag;
     - collect time and precise location of multimedia;
