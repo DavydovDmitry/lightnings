@@ -8,7 +8,12 @@ Essential processing stages:
     - collect time and location of multimedia;
 - display on map icons of lightnings (on click multimedia) if time and location from **Instagram** and from **Thunderfinder** are **the same**.  
 
-### Execution
+## Setup
+
+- [Python](https://www.python.org/downloads/) >= 3.7
+- [Poetry](https://python-poetry.org/docs/) >= 0.12
+
+## Execution
 ```shell script
 export $(cat local.env) &&
 docker-compose up
