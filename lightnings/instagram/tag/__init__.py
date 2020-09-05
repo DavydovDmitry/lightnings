@@ -1,1 +1,1 @@
-from .crawler import gather_multimedia
+from .collect import collect_multimedia_by_tag

@@ -9,12 +9,10 @@ from lightnings.database.utils import create_db_tables, drop_all_tables
 from lightnings.meteodata import is_downloaded_today, download_thunders_meteodata, \
     get_thunders_from_dumps, load_thunders2db
 from lightnings.instagram import load_media2db
-from lightnings.instagram.tag import gather_multimedia
+from lightnings.instagram.tag import collect_multimedia_by_tag
 from lightnings.server.run import run_server
 
 if __name__ == "__main__":
-    # drop_all_tables()
-
     configure_logging()
     create_db_tables()
 
@@ -24,8 +22,8 @@ if __name__ == "__main__":
     load_thunders2db(get_thunders_from_dumps())
 
     # collect media
-    # multimedia = gather_multimedia(tag='молния')
-    # load_media2db(multimedia)
+    multimedia = collect_multimedia_by_tag(tag='молния')
+    load_media2db(multimedia)
 
     # build_map()
     run_server()

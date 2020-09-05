@@ -23,8 +23,8 @@ ws.onmessage = function (evt) {
         let popup = L.popup({maxWidth: '100%'});        
         let iframe = document.createElement('iframe');
             iframe.src=video.url;
-            iframe.width=video.width;
-            iframe.height=video.height;
+            iframe.width=800;
+            iframe.height=600;
         popup.setContent(iframe);
         marker.bindPopup(popup)
         marker.addTo(map);
@@ -43,7 +43,7 @@ ws.onmessage = function (evt) {
         let iframe = document.createElement('iframe');
             iframe.width=800;
             iframe.height=600;
-        let html = '<body>' + 
+        let html = '<body>' +
                     '<img src="' + image.url + '"' + 'height="97%" width="100%">' +
                     '</body>';
         iframe.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
