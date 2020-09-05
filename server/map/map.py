@@ -24,7 +24,7 @@ def build_map():
     videos = session.query(Video).all()
     for video in videos:
         lightning = session.query(Thunder).filter_by(
-            lightning_id=video.lightning_id).first()
+            lightning_id=video.id).first()
         html = """
             <video width="{width}px" height="{height}px" controls>
                 <source src="{url}" type="video/mp4">
@@ -43,7 +43,7 @@ def build_map():
     images = session.query(Image).all()
     for image in images:
         lightning = session.query(Thunder).filter_by(
-            lightning_id=image.lightning_id).first()
+            lightning_id=image.id).first()
         html = '<img src={url} style="width:{width}px;height:{height}px;">'.format(
             url=image.explore_page_url, width=image.width, height=image.height)
         lat = lightning.latitude

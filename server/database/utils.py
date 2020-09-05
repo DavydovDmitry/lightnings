@@ -25,7 +25,8 @@ def create_db_tables():
 def drop_all_tables():
     engine = get_engine()
     for tbl in reversed(Base.metadata.sorted_tables):
-        engine.execute(tbl.delete())
+        tbl.drop(engine)
+        # engine.execute(tbl.delete())
 
 
 SessionFactory = sessionmaker(bind=get_engine())

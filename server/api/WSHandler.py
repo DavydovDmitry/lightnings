@@ -29,7 +29,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                                                          Thunder.longitude,
                                                          Video.width,
                                                          Video.height) 
-                .filter(Thunder.lightning_id == Video.lightning_id).all()]
+                .filter(Thunder.id == Video.id).all()]
         images = session.query(Image).all()
         images = [{
             'url': row[0],             
@@ -41,7 +41,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                                                          Thunder.longitude,
                                                          Image.width,
                                                          Image.height) 
-                .filter(Thunder.lightning_id == Image.lightning_id).all()]
+                .filter(Thunder.id == Image.id).all()]
                 
         response = {
             'videos': videos,

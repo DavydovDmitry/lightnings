@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, UniqueConstraint
-from sqlalchemy import Integer, TIMESTAMP, Float
+from sqlalchemy import Integer, TIMESTAMP, Float, BigInteger
 
 from . import Base
 
@@ -9,7 +9,7 @@ from . import Base
 class Thunder(Base):
     __tablename__ = 'lightning'
 
-    lightning_id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     time_start = Column(TIMESTAMP, nullable=False)
     time_end = Column(TIMESTAMP, nullable=False)
     quantity = Column(Integer, nullable=False)
@@ -23,14 +23,8 @@ class Thunder(Base):
                                        'latitude',
                                        name='uix_lightning'), )
 
-    def __init__(self,
-                 time_start,
-                 time_end,
-                 longitude,
-                 latitude,
-                 quantity,
-                 lightning_id=None):
-        self.lightning_id = lightning_id
+    def __init__(self, time_start, time_end, longitude, latitude, quantity, lightning_id=None):
+        self.id = lightning_id
         if isinstance(time_start, datetime):
             self.time_start = time_start
         else:
@@ -53,10 +47,9 @@ class Thunder(Base):
         return False
 
     def __hash__(self):
-        return hash(
-            (self.time_start, self.time_end, self.longitude, self.latitude))
+        return hash((self.time_start, self.time_end, self.longitude, self.latitude))
 
     def __str__(self):
-        return f'lightning_id: {self.lightning_id}, quantity: {self.quantity}, ' \
+        return f'lightning_id: {self.id}, quantity: {self.quantity}, ' \
                f'time_start: {self.time_start}, time_end: {self.time_end}, ' \
                f'longitude: {self.longitude}, latitude: {self.latitude}'

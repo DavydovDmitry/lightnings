@@ -3,7 +3,7 @@ from typing import Iterable
 
 import sqlalchemy
 
-from server.database import Thunder
+from server.database.thunder import Thunder
 from server.database.utils import Session
 
 

@@ -8,6 +8,10 @@ import requests
 from ..config import THUNDER_COORD
 
 
+def is_downloaded_today() -> bool:
+    return THUNDER_COORD.joinpath(date.today().isoformat()).with_suffix('.json').is_file()
+
+
 def download_thunders_meteodata(attempts_number: int = 3) -> bytes:
     """Request for the last day thunders data
 

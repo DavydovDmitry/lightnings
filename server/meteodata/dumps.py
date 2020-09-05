@@ -5,7 +5,7 @@ import pathlib
 from typing import Set, Generator
 
 from ..config import THUNDER_COORD
-from ..database.lightning import Thunder
+from ..database.thunder import Thunder
 
 
 def _get_thunder_dumpfiles(start_date: date) -> Generator[pathlib.Path, None, None]:

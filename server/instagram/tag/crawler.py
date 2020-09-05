@@ -9,11 +9,12 @@ import sys
 import aiohttp
 from tqdm import tqdm
 
-from .multimedia import Multimedia
+from server.database.multimedia import Multimedia, Image, Video
 from server.config import PROGRESSBAR_COLUMNS_NUM
 
 
-class Crawler:
+class TagCrawler:
+    """Gather multimedia by tag"""
     def __init__(self, tag: str):
         self.tag = tag
         self.explore_page_url = 'https://www.instagram.com/explore/tags/' + tag
@@ -61,12 +62,16 @@ class Crawler:
         }
         return params
 
-    async def extract_location(self):
+    async def extract_media_info(self):
+        """Take media (video or image) from task queue and make requests
+        to updates it's info
+        """
+
         async with aiohttp.ClientSession() as session:
             while True:
                 media = await self.task_queue.get()
 
-                # crawling is over
+                # crawling is over (stop word passed)
                 if media is None:
                     return
 
@@ -82,32 +87,37 @@ class Crawler:
                 shortcode_media = json.loads(
                     re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response)
                     [1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
-                if media.is_video:
+                media.upload_date = datetime.strptime(context_match['uploadDate'],
+                                                      '%Y-%m-%dT%H:%M:%S')
+                if isinstance(media, Video):
                     media.url = shortcode_media['video_url']
                 else:
                     media.width = shortcode_media['dimensions']['width']
                     media.height = shortcode_media['dimensions']['height']
 
-                # Look for location. Next request.
+                # get location id
                 if 'contentLocation' in context_match:
-                    media.upload_date = datetime.strptime(context_match['uploadDate'],
-                                                          '%Y-%m-%dT%H:%M:%S')
-                    async with session.get(
-                            context_match['contentLocation']['mainEntityofPage']['@id']) as r:
-                        response = await r.text()
-                        try:
-                            match = re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>',
-                                              response)[1]
-                        except TypeError:
-                            continue
+                    try:
+                        location_url = context_match['contentLocation']['mainEntityofPage'][
+                            '@id']
+                    except KeyError as e:
+                        pass
+                    else:
+                        media.location_id = int(
+                            re.findall(r'locations/([0-9]*)', location_url)[0])
 
-                    location = json.loads(
-                        match)['entry_data']['LocationsPage'][0]['graphql']['location']
-                    media.latitude = location['lat']
-                    media.longitude = location['lng']
-                    await self.results_queue.put(media)
+                await self.results_queue.put(media)
 
-    async def extract_media(self, response_text, first_request=False):
+    async def extract_media_shortcodes(self, response_text, first_request=False):
+        """From response text extract videos or images
+
+        Parameters
+        ----------
+        response_text : str
+            raw response text
+        first_request : bool
+            first request if for explore page 'https://www.instagram.com/explore/tags/'
+        """
         if first_request:
             match = re.search(
                 r"<script[^>]*>window._sharedData[ ]*=[ ]*((?!</script>).*);</script>",
@@ -120,43 +130,56 @@ class Crawler:
         edge_hashtag_to_media = hashtag_data["hashtag"]['edge_hashtag_to_media']
 
         media_count = 0
-        for edge in edge_hashtag_to_media['edges']:
-            media_count += 1
-            node = edge['node']
-            media = Multimedia(shortcode=node['shortcode'])
+        for node in (edge['node'] for edge in edge_hashtag_to_media['edges']):
             if node['is_video']:
-                media.is_video = True
+                media = Video(shortcode=node['shortcode'])
             else:
-                media.url = node['display_url']
+                media = Image(shortcode=node['shortcode'], url=node['display_url'])
             await self.task_queue.put(media)
+            media_count += 1
 
         page_info = edge_hashtag_to_media['page_info']
         return page_info['has_next_page'], page_info['end_cursor'], media_count
 
     async def scroll_page(self, view_limit: int) -> int:
-        """Scroll page and put tasks to task queue"""
+        """Scroll explore page and put tasks to task queue
+
+        Parameters
+        ----------
+        view_limit : int
+
+        Returns
+        -------
+        viewed_media : int
+            count viewed multimedia
+        """
 
         logging.info('Start collect shortcodes...')
         async with aiohttp.ClientSession() as session:
             self.query_hash = await self._get_query_hash(session)
+            viewed_media = 0
+            has_next_page = True
 
-            # first view
-            async with session.get(self.explore_page_url) as response:
-                response_text = await response.text()
-            has_next_page, end_cursor, media_count = await self.extract_media(
-                response_text, first_request=True)
-            viewed_media = media_count
-
-            # scroll page
             with tqdm(total=view_limit, ncols=PROGRESSBAR_COLUMNS_NUM,
                       file=sys.stdout) as progress_bar:
                 while has_next_page and viewed_media < view_limit:
-                    async with session.get(
-                            'https://www.instagram.com/graphql/query/',
-                            params=self._get_url_parameters(after=end_cursor)) as response:
-                        response_text = await response.text()
-                    has_next_page, end_cursor, media_count = await self.extract_media(
-                        response_text)
+
+                    # first request to explore page
+                    if viewed_media == 0:
+                        async with session.get(self.explore_page_url) as response:
+                            response_text = await response.text()
+                        has_next_page, end_cursor, media_count = await self.extract_media_shortcodes(
+                            response_text, first_request=True)
+
+                    # scroll page down and load new media
+                    else:
+                        async with session.get(
+                                url='https://www.instagram.com/graphql/query/',
+                                params=self._get_url_parameters(after=end_cursor)) as response:
+                            response_text = await response.text()
+                        has_next_page, end_cursor, media_count = await self.extract_media_shortcodes(
+                            response_text)
+
                     viewed_media += media_count
                     progress_bar.update(media_count)
         logging.info('Collecting of shortcodes is completed.')
@@ -178,15 +201,37 @@ class Crawler:
         progress_bar.update(total_tasks - progress_bar.n)
         logging.info('Completed extracting locations.')
 
-    def gather_multimedia(self, workers_num=100, view_limit=1000) -> List[Multimedia]:
-        loop = asyncio.get_event_loop()
-        schedule = loop.create_task(
-            self.schedule_crawling(workers_num=workers_num, view_limit=view_limit))
-        for _ in range(workers_num):
-            loop.create_task(self.extract_location())
-        loop.run_until_complete(schedule)
 
-        results = []
-        while not self.results_queue.empty():
-            results.append(self.results_queue.get_nowait())
-        return results
+def gather_multimedia(tag: str,
+                      workers_num: int = 100,
+                      view_limit: int = 1000) -> List[Multimedia]:
+    """Gather multimedia (video and images) by tag
+
+    Parameters
+    ----------
+    tag : str
+        tag to look for
+    workers_num : int
+        number of workers that will send requests asynchronously
+    view_limit : int
+        how much media view
+
+    Returns
+    -------
+    multimedia : list
+        collection of multimedia
+    """
+
+    crawler = TagCrawler(tag=tag)
+
+    loop = asyncio.get_event_loop()
+    schedule = loop.create_task(
+        crawler.schedule_crawling(workers_num=workers_num, view_limit=view_limit))
+    for _ in range(workers_num):
+        loop.create_task(crawler.extract_media_info())
+    loop.run_until_complete(schedule)
+
+    multimedia = []
+    while not crawler.results_queue.empty():
+        multimedia.append(crawler.results_queue.get_nowait())
+    return multimedia
