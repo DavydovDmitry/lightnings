@@ -9,8 +9,8 @@ import sys
 import aiohttp
 from tqdm import tqdm
 
-from server.database.multimedia import Multimedia, Image, Video
-from server.config import PROGRESSBAR_COLUMNS_NUM
+from lightnings.database.multimedia import Multimedia, Image, Video
+from lightnings.config import PROGRESSBAR_COLUMNS_NUM
 
 
 class TagCrawler:
@@ -87,7 +87,7 @@ class TagCrawler:
                 shortcode_media = json.loads(
                     re.search(r'_sharedData\s*=\s*((?!</script>).*);</script>', response)
                     [1])['entry_data']['PostPage'][0]['graphql']['shortcode_media']
-                media.upload_date = datetime.strptime(context_match['uploadDate'],
+                media.loaded_date = datetime.strptime(context_match['uploadDate'],
                                                       '%Y-%m-%dT%H:%M:%S')
                 if isinstance(media, Video):
                     media.url = shortcode_media['video_url']

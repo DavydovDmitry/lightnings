@@ -1,8 +1,8 @@
 import logging
 from typing import Iterable
 
-from server.database.multimedia import Multimedia, Video, Image
-from server.database.utils import Session
+from lightnings.database.multimedia import Multimedia, Video, Image
+from lightnings.database.utils import Session
 
 
 def load_media2db(multimedia: Iterable[Multimedia]):

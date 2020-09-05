@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from server.config import MAX_DISTANCE
+from lightnings.config import MAX_DISTANCE
 
 
 @dataclass

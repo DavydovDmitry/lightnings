@@ -30,9 +30,6 @@ class Multimedia(Base):
 
 
 class Image(Multimedia):
-    __tablename__ = 'image'
-
-    id = Column(Integer, ForeignKey('multimedia.id'), primary_key=True)
     width = Column(Integer)
     height = Column(Integer)
 
@@ -42,10 +39,6 @@ class Image(Multimedia):
 
 
 class Video(Multimedia):
-    __tablename__ = 'video'
-
-    id = Column(Integer, ForeignKey('multimedia.id'), primary_key=True)
-
     __mapper_args__ = {
         'polymorphic_identity': 'video',
     }

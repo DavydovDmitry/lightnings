@@ -2,5 +2,5 @@
 
 """
 
-from server.instagram.tag.crawler import TagCrawler
+from lightnings.instagram.tag.crawler import TagCrawler
 from .database import load_media2db

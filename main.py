@@ -1,15 +1,16 @@
 import pathlib
 import sys
 
-from server.utils.env import export_env
+from lightnings.utils.env import export_env
 export_env(env_file=pathlib.Path(sys.argv[0]).parent.absolute().joinpath('.env'))
 
-from server.utils.logging import configure_logging
-from server.database.utils import create_db_tables, drop_all_tables
-from server.meteodata import is_downloaded_today, download_thunders_meteodata, \
+from lightnings.utils.logging import configure_logging
+from lightnings.database.utils import create_db_tables, drop_all_tables
+from lightnings.meteodata import is_downloaded_today, download_thunders_meteodata, \
     get_thunders_from_dumps, load_thunders2db
-from server.instagram import load_media2db
-from server.instagram.tag import gather_multimedia
+from lightnings.instagram import load_media2db
+from lightnings.instagram.tag import gather_multimedia
+from lightnings.server.run import run_server
 
 if __name__ == "__main__":
     # drop_all_tables()
@@ -23,9 +24,9 @@ if __name__ == "__main__":
     load_thunders2db(get_thunders_from_dumps())
 
     # collect media
-    multimedia = gather_multimedia(tag='молния')
-    load_media2db(multimedia)
+    # multimedia = gather_multimedia(tag='молния')
+    # load_media2db(multimedia)
 
     # build_map()
-    # run_server()
+    run_server()
     # update_data()

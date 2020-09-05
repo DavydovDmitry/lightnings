@@ -3,8 +3,8 @@ from typing import Iterable
 
 import sqlalchemy
 
-from server.database.thunder import Thunder
-from server.database.utils import Session
+from lightnings.database.thunder import Thunder
+from lightnings.database.utils import Session
 
 
 def load_thunders2db(thunderstorms: Iterable[Thunder]):

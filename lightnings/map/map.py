@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import folium
 
-from server.database import Thunder, Image, Video
+from lightnings.database import Thunder, Image, Video
 
 
 def build_map():
