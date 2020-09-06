@@ -17,12 +17,12 @@ if __name__ == "__main__":
     create_db_tables()
 
     # collect new thunderstorms data and add to db
-    if is_downloaded_today():
+    if not is_downloaded_today():
         download_thunders_meteodata()
     load_thunders2db(get_thunders_from_dumps())
 
     # collect media
-    multimedia = collect_multimedia_by_tag(tag='молния')
+    multimedia = collect_multimedia_by_tag(tag='молния', view_limit=10000)
     load_media2db(multimedia)
 
     # build_map()

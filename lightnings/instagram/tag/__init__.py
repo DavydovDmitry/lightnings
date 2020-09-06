@@ -1,1 +1,1 @@
-from .collect import collect_multimedia_by_tag
+from .runner import collect_multimedia_by_tag

@@ -8,6 +8,16 @@ from ..config import THUNDER_COORD
 from ..database.thunder import Thunder
 
 
+def is_downloaded_today() -> bool:
+    """Is today thunderstorms dump exists
+
+    Returns
+    -------
+    is_downloaded : bool
+    """
+    return THUNDER_COORD.joinpath(date.today().isoformat()).with_suffix('.json').is_file()
+
+
 def _get_thunder_dumpfiles(start_date: date) -> Generator[pathlib.Path, None, None]:
     """Generator of paths to thunders data
 
@@ -38,6 +48,7 @@ def get_thunders_from_dumps(start_date: date = None) -> Set[Thunder]:
         not load data earlier than that date
     """
 
+    logging.info('Start read dump files...')
     read_files_count = 0
     thunderstorms = set()
     for file in _get_thunder_dumpfiles(start_date):
@@ -61,5 +72,5 @@ def get_thunders_from_dumps(start_date: date = None) -> Set[Thunder]:
                             time_start=time_start,
                             time_end=time_end,
                             quantity=quantity))
-    logging.info(f'Have read thunderstorms data for {read_files_count} days.')
+    logging.info(f'Finish read thunderstorms data for {read_files_count} days.')
     return thunderstorms

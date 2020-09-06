@@ -31,7 +31,7 @@ def load_thunders2db(thunderstorms: Iterable[Thunder]):
         try:
             session.commit()
             logging.info(
-                f'Upload thunderstorm data to db is completed (new {new_thunders_count} thunders).'
+                f'Finish load thunderstorm data to db (new {new_thunders_count} thunderstorms).'
             )
         except sqlalchemy.exc.IntegrityError as integrity_error:
             session.rollback()
