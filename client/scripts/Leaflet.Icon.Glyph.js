@@ -1,6 +1,3 @@
-
-
-
 L.Icon.Glyph = L.Icon.extend({
 	options: {
 		iconSize: [25, 41],

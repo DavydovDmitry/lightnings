@@ -158,7 +158,7 @@ class TagCrawler:
 
                     viewed_media += media_count
                     progress_bar.update(media_count)
-        logging.info('Finish collecting of shortcodes.')
+        logging.info('Finish collect of shortcodes.')
         return viewed_media
 
     async def schedule_crawling(self, workers_num: int, view_limit: int):
@@ -192,4 +192,4 @@ class TagCrawler:
                 await asyncio.sleep(1)
                 progress_bar.update(self.results_queue.qsize() - progress_bar.n)
         progress_bar.update(total_tasks - progress_bar.n)
-        logging.info('Finish extracting locations.')
+        logging.info('Finish extract locations.')

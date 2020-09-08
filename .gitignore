@@ -1,6 +1,7 @@
 **/.idea/
 **/__pycache__/
 **/.ipynb_checkpoints/
+**/.sass-cache/
 
 # ---------- Predefined configuration -----------
 # Byte-compiled / optimized / DLL files

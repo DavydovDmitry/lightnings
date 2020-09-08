@@ -15,6 +15,6 @@ Essential processing stages:
 
 ## Execution
 ```shell script
-export $(cat local.env) &&
+export $(cat .env) &&
 docker-compose up
 ```

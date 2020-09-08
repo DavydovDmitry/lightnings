@@ -51,7 +51,7 @@ def get_lightnings_media(session, time_start: datetime,
                 videos.append({
                     'url': video.url,
                     'lat': thunder.latitude,
-                    'lon': thunder.longitude
+                    'lng': thunder.longitude
                 })
                 break
 
@@ -62,7 +62,7 @@ def get_lightnings_media(session, time_start: datetime,
                 images.append({
                     'url': img.url,
                     'lat': thunder.latitude,
-                    'lon': thunder.longitude,
+                    'lng': thunder.longitude,
                     'width': img.width,
                     'height': img.height
                 })
