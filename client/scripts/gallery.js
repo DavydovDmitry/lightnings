@@ -43,6 +43,7 @@ class Gallery {
             gallery = document.createElement('div',);
             gallery.classList.add('gallery');
             gallery.id = galleryId;
+
             galleryContainer.appendChild(gallery);
         }
         return gallery;
@@ -52,7 +53,17 @@ class Gallery {
 function showGallery(e){
     let galleryId = Gallery.idFromLocation(e.latlng);
     let gallery = galleryContainer.querySelector(`#${galleryId}`);
+
     let map = document.querySelector('#mapid');
     map.style['z-index'] = 0;
-    gallery.style.display = 'block';
+    map.style.opacity = '60%';
+
+    let multimedia = gallery.querySelectorAll('.multimedia');
+    multimedia[0].style.display = 'block';
+}
+
+function closeGallery() {
+    let map = document.querySelector('#mapid');
+    map.style['z-index'] = 2;
+    map.style.opacity = null;
 }
