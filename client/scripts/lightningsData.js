@@ -20,7 +20,7 @@ ws.onmessage = function (evt) {
             })
         })
         MediaStorage.addVideo(video);
-        marker.on('click', showGallery);
+        marker.on('click', Gallery.show);
         marker.addTo(map);
     });
 
@@ -32,7 +32,7 @@ ws.onmessage = function (evt) {
             })
         })
         MediaStorage.addImage(image);
-        marker.on('click', showGallery);
+        marker.on('click', Gallery.show);
         marker.addTo(map);
     });
     ws.close()

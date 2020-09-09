@@ -2,6 +2,7 @@ const multimediaContainer = document.querySelector('#multimedia-container');
 
 var Gallery = {
     currentMedia: 0,
+    map: document.querySelector('#mapid'),
     gallery: document.querySelector('#gallery'),
 
     addVideo: (video) => {
@@ -32,23 +33,24 @@ var Gallery = {
             result += String(x).replace('.', '');
         });
         return result;
+    },
+    show: (e) => {
+        MediaStorage.toGallery(e.latlng);
+
+        let multimedia = multimediaContainer.querySelectorAll('.multimedia');
+
+        Gallery.map.style.opacity = '60%';
+        Gallery.gallery.style.display = 'flex';
+        Gallery.gallery.style['z-index'] = 2;
+    },
+    close: () => {
+        Gallery.map.style.opacity = null;
+        Gallery.gallery.style.display = 'none';
+        Gallery.gallery.style['z-index'] = 0;
+
+        multimediaContainer.querySelectorAll('.multimedia').forEach((media) => {
+            media.remove();
+        })
     }
 }
-
-function showGallery(e){
-    let galleryId = Gallery.idFromLocation(e.latlng);
-    MediaStorage.toGallery(e.latlng);
-
-    let map = document.querySelector('#mapid');
-    map.style.opacity = '60%';
-
-    let multimedia = multimediaContainer.querySelectorAll('.multimedia');
-    Gallery.gallery.style.display = 'flex';
-    Gallery.gallery.style['z-index'] = 2;
-}
-
-function closeGallery() {
-    let map = document.querySelector('#mapid');
-    Gallery.gallery.style['z-index'] = 0;
-    map.style.opacity = null;
-}
+Gallery.gallery.querySelector('header button').addEventListener('click', Gallery.close);
