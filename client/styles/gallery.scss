@@ -1,0 +1,80 @@
+#gallery{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 50%;
+    margin-left: calc(-0.5 * var(--gallery-width));
+    top: 50%;
+    margin-top: calc(-0.5 * var(--gallery-height));
+
+    z-index: 3;
+    width: var(--gallery-width);
+    height: var(--gallery-height);
+    background-color: black;
+    color: white;
+
+    header{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        button{
+            margin: 5px;
+            width: 30px;
+            height: 25px;
+        }
+        button:hover{
+            cursor: pointer;
+        }
+    }
+    #gallery-center{
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        background-color: black;
+
+        .gallery-button{
+            position: relative;
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: brightness(0.4);
+
+            div{
+                width: 50px;
+                height: 50px;
+                background-repeat: no-repeat;
+            }
+        }
+        .gallery-button:first-child div{
+            background-image: url("../images/chevron-left-solid.svg");
+        }
+        .gallery-button:last-child div{
+            background-image: url("../images/chevron-right-solid.svg");
+        }
+        .gallery-button:hover{
+            cursor: pointer;
+            filter: brightness(1);
+        }
+
+        #multimedia-container{
+            flex: 1;
+
+            .multimedia{
+
+                img{
+
+                }
+                video{
+
+                }
+            }
+        }
+    }
+    footer{
+        height: 40px;
+        color: white;
+        text-align: center;
+    }
+}

@@ -1,10 +1,10 @@
-const galleryContainer = document.querySelector('#gallery-container');
+const multimediaContainer = document.querySelector('#multimedia-container');
 
-class Gallery {
-    constructor(multimedia){
-        this.gallery = this.getGallery(multimedia);
-    }
-    addVideo(video){
+var Gallery = {
+    currentMedia: 0,
+    gallery: document.querySelector('#gallery'),
+
+    addVideo: (video) => {
         let videoElement = document.createElement('video');
         videoElement.classList.add('multimedia');
 
@@ -12,9 +12,9 @@ class Gallery {
         sourceElement.setAttribute('src', video.url);
 
         videoElement.appendChild(sourceElement);
-        this.gallery.appendChild(videoElement);
-    }
-    addImage(image){
+        multimediaContainer.appendChild(videoElement);
+    },
+    addImage: (image) => {
         let imageElement = document.createElement('div');
         imageElement.classList.add('multimedia');
 
@@ -22,9 +22,9 @@ class Gallery {
         sourceElement.setAttribute('src', image.url);
 
         imageElement.appendChild(sourceElement);
-        this.gallery.appendChild(imageElement);
-    }
-    static idFromLocation(loc){
+        multimediaContainer.appendChild(imageElement);
+    },
+    idFromLocation: (loc) => {
         let precision = 2;
         let result = 'loc';
         [loc.lat, loc.lng].forEach((x) => {
@@ -33,33 +33,19 @@ class Gallery {
         });
         return result;
     }
-    getGallery(multimedia){
-        let galleryId= Gallery.idFromLocation({
-            lat: multimedia.lat,
-            lng: multimedia.lng
-        });
-        let gallery = document.querySelector(`#${galleryId}`);
-        if (gallery === null) {
-            gallery = document.createElement('div',);
-            gallery.classList.add('gallery');
-            gallery.id = galleryId;
-
-            galleryContainer.appendChild(gallery);
-        }
-        return gallery;
-    }
 }
 
 function showGallery(e){
     let galleryId = Gallery.idFromLocation(e.latlng);
-    let gallery = galleryContainer.querySelector(`#${galleryId}`);
+    MediaStorage.toGallery(e.latlng);
 
     let map = document.querySelector('#mapid');
     map.style['z-index'] = 0;
     map.style.opacity = '60%';
 
-    let multimedia = gallery.querySelectorAll('.multimedia');
-    multimedia[0].style.display = 'block';
+    let multimedia = multimediaContainer.querySelectorAll('.multimedia');
+    // multimedia[0].style.display = 'block';
+    Gallery.gallery.style.display = 'block';
 }
 
 function closeGallery() {

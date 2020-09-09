@@ -19,8 +19,7 @@ ws.onmessage = function (evt) {
                 glyph: 'video'
             })
         })
-        let gallery = new Gallery(video);
-        gallery.addVideo(video);
+        MediaStorage.addVideo(video);
         marker.on('click', showGallery);
         marker.addTo(map);
     });
@@ -32,8 +31,7 @@ ws.onmessage = function (evt) {
                 glyph: 'camera'
             })
         })
-        let gallery = new Gallery(image);
-        gallery.addImage(image);
+        MediaStorage.addImage(image);
         marker.on('click', showGallery);
         marker.addTo(map);
     });

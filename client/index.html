@@ -11,11 +11,15 @@
     <!--Leaflet-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
-    <!--Other-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles/map.css">
     <script type="text/javascript" src="scripts/Leaflet.Icon.Glyph.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/map.css">
+    <link rel="stylesheet" href="styles/gallery.css">
+    <!--Scripts-->
     <script defer src="scripts/map.js"></script>
+    <script defer src="scripts/storage.js"></script>
     <script defer src="scripts/gallery.js"></script>
     <script defer src="scripts/lightnings.js"></script>
 </head>
@@ -23,6 +27,19 @@
     <div id="container">
             <div id="mapid"></div>
     </div>
-    <div id="gallery-container"></div>
+
+    <div id="gallery">
+        <header>
+            <button>x</button>
+        </header>
+        <section id="gallery-center">
+            <div class="gallery-button"><div></div></div>
+            <div id="multimedia-container">
+                <div class="multimedia"></div>
+            </div>
+            <div class="gallery-button"><div></div></div>
+        </section>
+        <footer>x from x multimedia</footer>
+    </div>
 </body>
 </html>
