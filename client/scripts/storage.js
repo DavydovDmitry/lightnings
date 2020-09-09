@@ -53,13 +53,24 @@ var MediaStorage = {
         const request = window.indexedDB.open(this.dbName, this.dbVersion)
         request.onsuccess = (e) => {
             const db = e.target.result;
-            const tx = db.transaction('video', 'readonly');
-            const store = tx.objectStore('video');
-            const index = store.index('galleryId');
-            let request = index.getAll(IDBKeyRange.only(galleryId));
-            request.onsuccess = (media) => {
-                request.result.forEach((media) => {
+
+            let tx = db.transaction('video', 'readonly');
+            let store = tx.objectStore('video');
+            let index = store.index('galleryId');
+            let videoRequest = index.getAll(IDBKeyRange.only(galleryId));
+            videoRequest.onsuccess = (media) => {
+                videoRequest.result.forEach((media) => {
                     Gallery.addVideo(media)
+                });
+            }
+
+            tx = db.transaction('image', 'readonly');
+            store = tx.objectStore('image');
+            index = store.index('galleryId');
+            let imageRequest = index.getAll(IDBKeyRange.only(galleryId));
+            imageRequest.onsuccess = (media) => {
+                imageRequest.result.forEach((media) => {
+                    Gallery.addImage(media)
                 });
             }
         }
