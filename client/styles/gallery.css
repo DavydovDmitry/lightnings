@@ -46,6 +46,8 @@
       filter: brightness(1); }
     #gallery #gallery-center #multimedia-container {
       flex: 1; }
+      #gallery #gallery-center #multimedia-container .multimedia {
+        display: none; }
   #gallery footer {
     height: 40px;
     color: white;

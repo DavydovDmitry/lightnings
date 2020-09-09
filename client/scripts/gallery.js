@@ -37,11 +37,12 @@ var Gallery = {
     show: (e) => {
         MediaStorage.toGallery(e.latlng);
 
-        let multimedia = multimediaContainer.querySelectorAll('.multimedia');
-
         Gallery.map.style.opacity = '60%';
         Gallery.gallery.style.display = 'flex';
         Gallery.gallery.style['z-index'] = 2;
+
+        let multimedia = multimediaContainer.querySelectorAll('.multimedia');
+        multimedia[0].style.display = 'block';
     },
     close: () => {
         Gallery.map.style.opacity = null;
@@ -51,6 +52,16 @@ var Gallery = {
         multimediaContainer.querySelectorAll('.multimedia').forEach((media) => {
             media.remove();
         })
+    },
+    next: () => {
+        Gallery.currentMedia++;
+        let multimedia = multimediaContainer.querySelectorAll('.multimedia');
+        multimedia[Gallery.currentMedia % multimediaContainer.querySelectorAll('.multimedia').length].style.display = 'block';
+    },
+    prev: () => {
+
     }
 }
 Gallery.gallery.querySelector('header button').addEventListener('click', Gallery.close);
+Gallery.gallery.querySelector('.gallery-button:first-child').addEventListener('click', Gallery.prev);
+Gallery.gallery.querySelector('.gallery-button:last-child').addEventListener('click', Gallery.next);
