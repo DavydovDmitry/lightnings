@@ -40,16 +40,15 @@ function showGallery(e){
     MediaStorage.toGallery(e.latlng);
 
     let map = document.querySelector('#mapid');
-    map.style['z-index'] = 0;
     map.style.opacity = '60%';
 
     let multimedia = multimediaContainer.querySelectorAll('.multimedia');
-    // multimedia[0].style.display = 'block';
-    Gallery.gallery.style.display = 'block';
+    Gallery.gallery.style.display = 'flex';
+    Gallery.gallery.style['z-index'] = 2;
 }
 
 function closeGallery() {
     let map = document.querySelector('#mapid');
-    map.style['z-index'] = 2;
+    Gallery.gallery.style['z-index'] = 0;
     map.style.opacity = null;
 }
