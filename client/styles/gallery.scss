@@ -1,3 +1,10 @@
+:root{
+  --gallery-width: 800px;
+  --gallery-height: 600px;
+  --gallery-header-height: 50px;
+  --gallery-footer-height: 50px;
+}
+
 #gallery{
     display: none;
     flex-direction: column;
@@ -17,9 +24,11 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+        justify-content: center;
+        height: 40px;
+        margin: 0 10px;
 
         button{
-            margin: 5px;
             width: 30px;
             height: 25px;
         }
@@ -28,7 +37,6 @@
         }
     }
     #gallery-center{
-        flex: 1;
         display: flex;
         flex-direction: row;
         background-color: black;
@@ -59,13 +67,15 @@
         }
 
         #multimedia-container{
-            flex: 1;
+            //overflow: hidden;
+            height: calc(var(--gallery-height) - var(--gallery-header-height) - var(--gallery-footer-height));
 
             .multimedia{
                 display: none;
+                height: 100%;
 
                 img{
-
+                    height: 100%;
                 }
                 video{
 
