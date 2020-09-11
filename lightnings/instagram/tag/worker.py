@@ -2,16 +2,29 @@ import json
 import re
 from datetime import datetime
 import asyncio
+import pathlib
+from urllib.parse import urlparse
 
 import aiohttp
+import aiofiles
 
+from lightnings.config import INSTAGRAM_DATA
 from lightnings.database.multimedia import Video
 from .crawler import STOP_SYMBOL
 
 
-async def extract_media_info(task_queue: asyncio.Queue, results_queue: asyncio.Queue):
+async def extract_media_info(task_queue: asyncio.Queue,
+                             results_queue: asyncio.Queue,
+                             is_save_locally: bool = True):
     """Take media (video or image) from task queue and make requests
     to updates it's info
+    
+    Parameters
+    ----------
+    task_queue : asyncio.Queue
+    results_queue : asyncio.Queue
+    is_save_locally : bool
+        better to save file until url parameters expired
     """
 
     async with aiohttp.ClientSession() as session:
@@ -54,3 +67,13 @@ async def extract_media_info(task_queue: asyncio.Queue, results_queue: asyncio.Q
                     media.location_id = int(re.findall(r'locations/([0-9]*)', location_url)[0])
 
             await results_queue.put(media)
+
+            # save file locally
+            if is_save_locally:
+                async with session.get(media.url) as response:
+                    response_text = await response.read()
+                    media_suffix = pathlib.Path(urlparse(media.url).path).suffix
+                    async with aiofiles.open(
+                            INSTAGRAM_DATA.joinpath(media.shortcode).with_suffix(media_suffix),
+                            'wb') as f:
+                        await f.write(response_text)
