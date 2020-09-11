@@ -9,7 +9,7 @@ import socket
 from .api import WSHandler
 
 application = tornado.web.Application([
-    (r'/ws', WSHandler, {}),
+    (r'/meteo', WSHandler, {}),
 ])
 
 

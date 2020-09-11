@@ -34,10 +34,12 @@ var MediaStorage = {
     const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.videoStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.videoStore);
-    await store.add({
-      url: video.url,
-      galleryId: galleryId
-    });
+    if (await store.get(video.url) === undefined){
+      await store.add({
+        url: video.url,
+        galleryId: galleryId
+      });
+    }
   },
   addImage: async (image) => {
     const galleryId = Gallery.idFromLocation({
@@ -48,10 +50,12 @@ var MediaStorage = {
     const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.imageStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.imageStore);
-    await store.add({
-      url: image.url,
-      galleryId: galleryId
-    });
+    if (await store.get(image.url) === undefined){
+      await store.add({
+        url: image.url,
+        galleryId: galleryId
+      });
+    }
   },
   toGallery: async (loc) => {
     const galleryId = Gallery.idFromLocation(loc);

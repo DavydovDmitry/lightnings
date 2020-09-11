@@ -66,14 +66,14 @@ async def extract_media_info(task_queue: asyncio.Queue,
                 else:
                     media.location_id = int(re.findall(r'locations/([0-9]*)', location_url)[0])
 
-            await results_queue.put(media)
-
             # save file locally
             if is_save_locally:
-                async with session.get(media.url) as response:
-                    response_text = await response.read()
-                    media_suffix = pathlib.Path(urlparse(media.url).path).suffix
-                    async with aiofiles.open(
-                            INSTAGRAM_DATA.joinpath(media.shortcode).with_suffix(media_suffix),
-                            'wb') as f:
-                        await f.write(response_text)
+                media_suffix = pathlib.Path(urlparse(media.url).path).suffix
+                filename = INSTAGRAM_DATA.joinpath(media.shortcode).with_suffix(media_suffix)
+                if not filename.is_file():
+                    async with session.get(media.url) as response:
+                        response_text = await response.read()
+                        async with aiofiles.open(filename, 'wb') as f:
+                            await f.write(response_text)
+
+            await results_queue.put(media)

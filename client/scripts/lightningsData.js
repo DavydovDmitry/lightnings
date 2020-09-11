@@ -4,7 +4,7 @@ const video_icon = L.divIcon({
   className: 'media_icon'
 });
 
-const ws = new WebSocket("ws://" + REST_IP + ":" + REST_PORT + "/ws");
+const ws = new WebSocket("ws://" + REST_IP + ":" + REST_PORT + "/meteo");
 ws.onopen = function() {
  console.log('Open socket')
 };
