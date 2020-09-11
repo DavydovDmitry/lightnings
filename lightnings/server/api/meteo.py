@@ -4,11 +4,11 @@ import datetime
 
 import tornado.websocket
 
-from .service.get_lightnings import get_lightnings_media
+from lightnings.server.service.get_lightnings import get_lightnings_media
 from lightnings.database.utils import Session
 
 
-class WSHandler(tornado.websocket.WebSocketHandler):
+class MeteoHandler(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

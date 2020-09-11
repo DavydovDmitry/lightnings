@@ -50,6 +50,7 @@ def get_lightnings_media(session, time_start: datetime,
             if thunder.time_start - MAX_TIMEDELTA < video.loaded_date < thunder.time_end + MAX_TIMEDELTA:
                 videos.append({
                     'url': video.url,
+                    'shortcode': video.shortcode,
                     'lat': thunder.latitude,
                     'lng': thunder.longitude
                 })
@@ -61,6 +62,7 @@ def get_lightnings_media(session, time_start: datetime,
             if thunder.time_start - MAX_TIMEDELTA < img.loaded_date < thunder.time_end + MAX_TIMEDELTA:
                 images.append({
                     'url': img.url,
+                    'shortcode': img.shortcode,
                     'lat': thunder.latitude,
                     'lng': thunder.longitude,
                     'width': img.width,

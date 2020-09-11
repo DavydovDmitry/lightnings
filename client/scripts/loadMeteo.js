@@ -1,4 +1,4 @@
-const ws = new WebSocket("ws://" + REST_IP + ":" + REST_PORT + "/meteo");
+const ws = new WebSocket(`ws://${REST_IP}:${REST_PORT}/meteo`);
 ws.onopen = function() {
  console.log('Open socket for meteo data...');
 };

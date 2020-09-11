@@ -10,15 +10,17 @@ var MediaStorage = {
         let store;
 
         if (oldVersion < 1){
-         store = db.createObjectStore(MediaStorage.videoStore, {
+          store = db.createObjectStore(MediaStorage.videoStore, {
             keyPath: 'url'
           });
           store.createIndex('galleryId', 'galleryId', {unique: false});
+          store.createIndex('shortcode', 'shortcode', {unique: true});
 
           store = db.createObjectStore(MediaStorage.imageStore, {
             keyPath: 'url'
           });
           store.createIndex('galleryId', 'galleryId', {unique: false});
+          store.createIndex('shortcode', 'shortcode', {unique: true});
         } else {
           console.log('Latter db version');
         }
@@ -37,6 +39,7 @@ var MediaStorage = {
     if (await store.get(video.url) === undefined){
       await store.add({
         url: video.url,
+        shortcode: video.shortcode,
         galleryId: galleryId
       });
     }
@@ -53,6 +56,7 @@ var MediaStorage = {
     if (await store.get(image.url) === undefined){
       await store.add({
         url: image.url,
+        shortcode: image.shortcode,
         galleryId: galleryId
       });
     }

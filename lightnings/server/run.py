@@ -6,10 +6,12 @@ import tornado.ioloop
 import tornado.web
 import socket
 
-from .api import WSHandler
+from .api.meteo import MeteoHandler
+from .api.media import MediaHandler
 
 application = tornado.web.Application([
-    (r'/meteo', WSHandler, {}),
+    (r'/meteo', MeteoHandler, {}),
+    (r'/media', MediaHandler, {})
 ])
 
 

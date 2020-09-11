@@ -11,6 +11,9 @@ var Gallery = {
 
     let sourceElement = document.createElement('source');
     sourceElement.setAttribute('src', video.url);
+    sourceElement.onerror = (e) => {
+      loadMedia(video.shortcode);
+    }
 
     videoElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(videoElement);
