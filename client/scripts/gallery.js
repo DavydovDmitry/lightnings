@@ -55,7 +55,7 @@ var Gallery = {
 
     show: () => {
       let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
-      multimedia[Gallery.media.currentIndex].style.display = 'block';
+      multimedia[Gallery.media.currentIndex].style.display = 'flex';
     },
     close: () => {
       let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
@@ -115,3 +115,17 @@ var Gallery = {
 Gallery.gallery.querySelector('header button').addEventListener('click', Gallery.close);
 Gallery.leftButton.addEventListener('click', Gallery.prev);
 Gallery.rightButton.addEventListener('click', Gallery.next);
+
+window.addEventListener('keyup', (e) => {
+  switch (e.code){
+    case 'Escape':
+      Gallery.close();
+      break;
+    case 'KeyQ':
+      Gallery.prev();
+      break;
+    case 'KeyE':
+      Gallery.next();
+      break;
+  }
+});
