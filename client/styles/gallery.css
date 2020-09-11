@@ -1,8 +1,8 @@
 :root {
   --gallery-width: 800px;
   --gallery-height: 600px;
-  --gallery-header-height: 50px;
-  --gallery-footer-height: 50px; }
+  --gallery-header-height: 40px;
+  --gallery-footer-height: 30px; }
 
 #gallery {
   display: none;
@@ -22,7 +22,7 @@
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    height: 40px;
+    height: var(--gallery-header-height);
     margin: 0 10px; }
     #gallery header button {
       width: 30px;
@@ -32,6 +32,7 @@
   #gallery #gallery-center {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     background-color: black; }
     #gallery #gallery-center .gallery-button {
       position: relative;
@@ -57,9 +58,9 @@
         display: none;
         height: 100%; }
         #gallery #gallery-center #multimedia-container .multimedia img {
-          height: 100%; }
+          max-height: 100%; }
   #gallery footer {
-    height: 40px;
+    height: var(--gallery-footer-height);
     color: white;
     text-align: center; }
 
