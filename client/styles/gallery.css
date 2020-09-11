@@ -49,7 +49,7 @@
       background-image: url("../images/chevron-left-solid.svg"); }
     #gallery #gallery-center .gallery-button:last-child div {
       background-image: url("../images/chevron-right-solid.svg"); }
-    #gallery #gallery-center .gallery-button:hover {
+    #gallery #gallery-center .gallery-button.active:hover {
       cursor: pointer;
       filter: brightness(1); }
     #gallery #gallery-center #multimedia-container {

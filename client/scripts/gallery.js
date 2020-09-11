@@ -1,9 +1,9 @@
-// Representation of document gallery element
 var Gallery = {
   map: document.querySelector('#mapid'),
   gallery: document.querySelector('#gallery'),
   multimediaContainer: document.querySelector('#multimedia-container'),
-  currentMedia: 0,
+  leftButton: document.querySelector('.gallery-button:first-child'),
+  rightButton: document.querySelector('.gallery-button:last-child'),
 
   addVideo: (video) => {
     let videoElement = document.createElement('video');
@@ -14,7 +14,6 @@ var Gallery = {
 
     videoElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(videoElement);
-    videoElement.style.display = 'block';
   },
   addImage: (image) => {
     let imageElement = document.createElement('div');
@@ -25,7 +24,6 @@ var Gallery = {
 
     imageElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(imageElement);
-    imageElement.style.display = 'block';
   },
   idFromLocation: (loc) => {
     let precision = 2;
@@ -36,10 +34,42 @@ var Gallery = {
     });
     return result;
   },
+
+  button: {
+    deactivateLeft: () => {
+      Gallery.leftButton.classList.remove('active');
+    },
+    deactivateRight: () => {
+      Gallery.rightButton.classList.remove('active');
+    },
+    activateLeft: () => {
+      Gallery.leftButton.classList.add('active');
+    },
+    activateRight: () => {
+      Gallery.rightButton.classList.add('active');
+    },
+  },
+
+  media: {
+    currentIndex: 0,
+
+    show: () => {
+      let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
+      multimedia[Gallery.media.currentIndex].style.display = 'block';
+    },
+    close: () => {
+      let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
+      multimedia[Gallery.media.currentIndex].style.display = 'none';
+    }
+  },
+
   show: (e) => {
     MediaStorage.toGallery(e.latlng).then(() => {
-      let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
-      multimedia[0].style.display = 'block';
+      Gallery.media.currentIndex = 0;
+      Gallery.media.show();
+      if (Gallery.multimediaContainer.childNodes.length > 1){
+        Gallery.button.activateRight();
+      }
     })
 
     Gallery.map.style.opacity = '60%';
@@ -56,16 +86,32 @@ var Gallery = {
     })
   },
   next: () => {
-    Gallery.currentMedia++;
-    let multimedia = Gallery.multimediaContainer.querySelectorAll('.multimedia');
-    multimedia[Gallery.currentMedia % multimedia.length].style.display = 'block';
+    Gallery.media.close()
+    Gallery.media.currentIndex++;
+    Gallery.media.show();
+
+    if (Gallery.media.currentIndex > 0){
+      Gallery.button.activateLeft();
+    }
+    if (Gallery.media.currentIndex <= Gallery.multimediaContainer.querySelectorAll('.multimedia').length - 1){
+      Gallery.button.deactivateRight();
+    }
   },
   prev: () => {
+    Gallery.media.close();
+    Gallery.media.currentIndex--;
+    Gallery.media.show();
 
+    if (Gallery.media.currentIndex <= 0){
+      Gallery.button.deactivateLeft();
+    }
+    if (Gallery.media.currentIndex <= Gallery.multimediaContainer.querySelectorAll('.multimedia').length - 1){
+      Gallery.button.activateRight();
+    }
   }
 }
 
 // add event handlers
 Gallery.gallery.querySelector('header button').addEventListener('click', Gallery.close);
-Gallery.gallery.querySelector('.gallery-button:first-child').addEventListener('click', Gallery.prev);
-Gallery.gallery.querySelector('.gallery-button:last-child').addEventListener('click', Gallery.next);
+Gallery.leftButton.addEventListener('click', Gallery.prev);
+Gallery.rightButton.addEventListener('click', Gallery.next);

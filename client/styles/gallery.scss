@@ -62,7 +62,7 @@
         .gallery-button:last-child div{
             background-image: url("../images/chevron-right-solid.svg");
         }
-        .gallery-button:hover{
+        .gallery-button.active:hover{
             cursor: pointer;
             filter: brightness(1);
         }
