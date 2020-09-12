@@ -1,6 +1,7 @@
 var MediaStorage = {
   dbName: 'lightnings',
   dbVersion: 1,
+  blobStorage: 'blob',
   videoStore: 'video',
   imageStore: 'image',
 
@@ -21,11 +22,25 @@ var MediaStorage = {
           });
           store.createIndex('galleryId', 'galleryId', {unique: false});
           store.createIndex('shortcode', 'shortcode', {unique: true});
+
+          store = db.createObjectStore(MediaStorage.blobStorage, {keyPath: 'shortcode'});
         } else {
           console.log('Latter db version');
         }
       }
     });
+  },
+  addBlob: async (blob) => {
+    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const tx = db.transaction([MediaStorage.blobStorage], 'readwrite');
+    await tx.objectStore(MediaStorage.blobStorage).put(blob);
+  },
+  getBlobURL: async (shortcode) => {
+    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const tx = db.transaction(MediaStorage.blobStorage, 'readonly');
+    const store = tx.objectStore(MediaStorage.blobStorage);
+    const blob = await store.get(IDBKeyRange.only(shortcode));
+    return blob.blob;
   },
   addVideo: async (video) => {
     const galleryId = Gallery.idFromLocation({
@@ -44,6 +59,12 @@ var MediaStorage = {
       });
     }
   },
+  putVideo: async (video, shortcode) => {
+    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const tx = db.transaction(MediaStorage.videoStore, 'readwrite');
+    const store = tx.objectStore(MediaStorage.videoStore);
+    await store.put(video, shortcode);
+  },
   addImage: async (image) => {
     const galleryId = Gallery.idFromLocation({
         lat: image.lat,
@@ -61,6 +82,12 @@ var MediaStorage = {
       });
     }
   },
+  putImage: async (image, shortcode) => {
+    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const tx = db.transaction(MediaStorage.imageStore, 'readwrite');
+    const store = tx.objectStore(MediaStorage.imageStore);
+    await store.put(image, shortcode);
+  },
   toGallery: async (loc) => {
     const galleryId = Gallery.idFromLocation(loc);
     const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
@@ -69,18 +96,45 @@ var MediaStorage = {
     let store = tx.objectStore(MediaStorage.videoStore);
     let index = store.index('galleryId');
     let videos = await index.getAll(IDBKeyRange.only(galleryId));
-    videos.forEach((media) => {
-      Gallery.addVideo(media);
-    });
     tx.done;
+    for (const video of videos){
+      await updateVideo(video);
+    }
+    // const promises = videos.map(updateVideo);
+    // await Promise.all(promises);
 
     tx = db.transaction(MediaStorage.imageStore, 'readonly');
     store = tx.objectStore(MediaStorage.imageStore);
     index = store.index('galleryId');
     let images = await index.getAll(IDBKeyRange.only(galleryId));
+    tx.done;
     images.forEach((media) => {
       Gallery.addImage(media);
     });
-    tx.done;
+  }
+}
+
+async function updateVideo(media) {
+  const response = await fetch(media.url);
+  if (!response.ok) {
+    const extenction = media.url.split('?')[0].split('.').slice(-1)[0];
+    const serverURL = `${REST_PROTOCOL}://${REST_IP}:${REST_PORT}/media/${media.shortcode + '.' + extenction}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', serverURL);
+    xhr.onload = async (evt) => {
+      let blob = evt.target.response;
+
+      await MediaStorage.addBlob({
+        'blob': blob,
+        'shortcode': media.shortcode
+      });
+
+      const localURL = await MediaStorage.getBlobURL(media.shortcode);
+      // await MediaStorage.putVideo(localURL);
+      Gallery.addVideo(localURL.strem());
+    }
+    xhr.send();
+  } else {
+    Gallery.addVideo(media);
   }
 }

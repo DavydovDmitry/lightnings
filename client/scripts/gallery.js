@@ -10,13 +10,12 @@ var Gallery = {
     videoElement.classList.add('multimedia');
 
     let sourceElement = document.createElement('source');
-    sourceElement.setAttribute('src', video.url);
-    sourceElement.onerror = (e) => {
-      loadMedia(video.shortcode);
-    }
+    // sourceElement.setAttribute('src', video.url);
+    sourceElement.srcObject = video;
 
     videoElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(videoElement);
+    sourceElement.play();
   },
   addImage: (image) => {
     let imageElement = document.createElement('div');

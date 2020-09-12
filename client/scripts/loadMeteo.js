@@ -1,11 +1,7 @@
-const ws = new WebSocket(`ws://${REST_IP}:${REST_PORT}/meteo`);
-ws.onopen = function() {
- console.log('Open socket for meteo data...');
-};
-ws.onmessage = async (evt) => {
-  let data = JSON.parse(evt.data)
-  ws.close()
-
+const xhr = new XMLHttpRequest();
+xhr.open('GET', `http://${REST_IP}:${REST_PORT}/meteo`);
+xhr.onload = async (evt) => {
+  let data = JSON.parse(evt.target.response);
   await MediaStorage.createStores();
 
   data['videos'].forEach(video => {
@@ -32,3 +28,4 @@ ws.onmessage = async (evt) => {
       marker.addTo(map);
   });
 };
+xhr.send();
