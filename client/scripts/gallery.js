@@ -11,7 +11,7 @@ var Gallery = {
 
     let sourceElement = document.createElement('source');
     // sourceElement.setAttribute('src', video.url);
-    sourceElement.srcObject = video;
+    sourceElement.src = video;
 
     videoElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(videoElement);

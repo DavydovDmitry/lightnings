@@ -100,8 +100,6 @@ var MediaStorage = {
     for (const video of videos){
       await updateVideo(video);
     }
-    // const promises = videos.map(updateVideo);
-    // await Promise.all(promises);
 
     tx = db.transaction(MediaStorage.imageStore, 'readonly');
     store = tx.objectStore(MediaStorage.imageStore);
@@ -129,12 +127,23 @@ async function updateVideo(media) {
         'shortcode': media.shortcode
       });
 
-      const localURL = await MediaStorage.getBlobURL(media.shortcode);
-      // await MediaStorage.putVideo(localURL);
-      Gallery.addVideo(localURL.strem());
+
+      let video = Gallery.multimediaContainer.querySelector('video');
+      const mediaBlob = await MediaStorage.getBlobURL(media.shortcode);
+      let mediaSource = new MediaSource();
+      video.src = URL.createObjectURL(mediaSource);
+      mediaSource.addEventListener('sourceopen', () => {
+        var mediaSource = this;
+        var sourceBuffer = mediaSource.addSourceBuffer('video/mp4');
+        sourceBuffer.addEventListener('updateend', function (_) {
+          mediaSource.endOfStream();
+          video.play();
+        });
+        sourceBuffer.appendBuffer(mediaBlob);
+      });
     }
     xhr.send();
   } else {
-    Gallery.addVideo(media);
+    // Gallery.addVideo(media);
   }
 }
