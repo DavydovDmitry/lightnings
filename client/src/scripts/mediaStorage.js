@@ -1,4 +1,7 @@
-var MediaStorage = {
+import {openDB} from 'idb'
+import {Gallery} from "./gallery";
+
+export let MediaStorage = {
   dbName: 'lightnings',
   dbVersion: 1,
   blobStorage: 'blob',
@@ -6,7 +9,7 @@ var MediaStorage = {
   imageStore: 'image',
 
   createStores: async () => {
-    let db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion, {
+    await openDB(MediaStorage.dbName, MediaStorage.dbVersion, {
       upgrade(db, oldVersion, newVersion){
         let store;
 
@@ -31,12 +34,12 @@ var MediaStorage = {
     });
   },
   addBlob: async (blob) => {
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction([MediaStorage.blobStorage], 'readwrite');
     await tx.objectStore(MediaStorage.blobStorage).put(blob);
   },
   getBlobURL: async (shortcode) => {
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.blobStorage, 'readonly');
     const store = tx.objectStore(MediaStorage.blobStorage);
     const blob = await store.get(IDBKeyRange.only(shortcode));
@@ -48,7 +51,7 @@ var MediaStorage = {
       lng: video.lng
     });
 
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.videoStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.videoStore);
     if (await store.get(video.url) === undefined){
@@ -60,7 +63,7 @@ var MediaStorage = {
     }
   },
   putVideo: async (video, shortcode) => {
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.videoStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.videoStore);
     await store.put(video, shortcode);
@@ -71,7 +74,7 @@ var MediaStorage = {
         lng: image.lng
     });
 
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.imageStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.imageStore);
     if (await store.get(image.url) === undefined){
@@ -83,14 +86,14 @@ var MediaStorage = {
     }
   },
   putImage: async (image, shortcode) => {
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.imageStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.imageStore);
     await store.put(image, shortcode);
   },
   toGallery: async (loc) => {
     const galleryId = Gallery.idFromLocation(loc);
-    const db = await idb.openDB(MediaStorage.dbName, MediaStorage.dbVersion);
+    const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
 
     let tx = db.transaction(MediaStorage.videoStore, 'readonly');
     let store = tx.objectStore(MediaStorage.videoStore);
@@ -112,7 +115,7 @@ var MediaStorage = {
   }
 }
 
-async function updateVideo(media) {
+export async function updateVideo(media) {
   const response = await fetch(media.url);
   if (!response.ok) {
     const extenction = media.url.split('?')[0].split('.').slice(-1)[0];

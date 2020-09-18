@@ -9,6 +9,9 @@ MAX_TIMEDELTA = timedelta(hours=0, minutes=15)
 CACHE_PATH = pathlib.Path.home().joinpath('.lightnings')
 THUNDER_COORD = CACHE_PATH.joinpath('coords')
 INSTAGRAM_DATA = CACHE_PATH.joinpath('instagram')
+
+# Create separate directory on each running where to save console output
+# and error data
 _ALL_LOGS_DIR = CACHE_PATH.joinpath('logs')
 LOG_PATH = _ALL_LOGS_DIR.joinpath(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 

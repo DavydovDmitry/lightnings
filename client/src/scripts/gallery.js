@@ -1,4 +1,4 @@
-var Gallery = {
+export let Gallery = {
   map: document.querySelector('#mapid'),
   gallery: document.querySelector('#gallery'),
   multimediaContainer: document.querySelector('#multimedia-container'),

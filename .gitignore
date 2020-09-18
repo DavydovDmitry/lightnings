@@ -1,8 +1,10 @@
-**/.idea/
+.idea/
+node_modules/
+
+**/dist/
 **/__pycache__/
 **/.ipynb_checkpoints/
 **/.sass-cache/
-notebooks
 
 # ---------- Predefined configuration -----------
 # Byte-compiled / optimized / DLL files
