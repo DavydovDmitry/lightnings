@@ -7,10 +7,10 @@ const videoIcon = new Icon({
   // anchorXUnits: 'fraction',
   // anchorYUnits: 'pixels',
   src: videoImage,
-  scale: 0.15
+  scale: 0.14
 })
 
-export const iconStyle = [
+export const videoIconStyle = [
   backgroundStyle,
   new Style({
     image: videoIcon

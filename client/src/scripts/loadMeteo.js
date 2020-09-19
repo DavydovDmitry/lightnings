@@ -1,5 +1,5 @@
 import {REST_PROTOCOL, REST_IP, REST_PORT} from "./config";
-import {worldMap, iconStyle, idFromLonLat} from './map';
+import {worldMap, videoIconStyle, idFromLonLat, imageIconStyle, mediaIconStyle} from './map';
 import {Feature} from "ol";
 import Point from "ol/geom/Point";
 import {fromLonLat} from "ol/proj";
@@ -7,7 +7,6 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import {MediaStorage} from "./mediaStorage";
 import {Gallery} from "./gallery";
-import {getFeature} from "leaflet/src/layer/GeoJSON";
 
 export function loadMeteo(){
   const xhr = new XMLHttpRequest();
@@ -15,33 +14,63 @@ export function loadMeteo(){
   xhr.onload = async (evt) => {
     await MediaStorage.createStores();
     let data = JSON.parse(evt.target.response);
-    let mediaFeatures = new Map();
+
+    let videoLocations = new Map();
+    let imageLocations = new Map();
 
     data['videos'].forEach(video => {
-      let videoFeature = new Feature({
-        geometry: new Point(fromLonLat([video.lon, video.lat]))
+      let id = idFromLonLat(video.lon, video.lat);
+      if (!videoLocations.has(id)) videoLocations.set(id, {
+        lon: video.lon,
+        lat: video.lat
       });
-      videoFeature.id = idFromLonLat(video.lon, video.lat);
-      videoFeature.setStyle(iconStyle);
-      if (!mediaFeatures.has(videoFeature.id)) mediaFeatures.set(videoFeature.id, videoFeature);
       MediaStorage.addVideo(video);
     });
 
     data['images'].forEach(image => {
-      let imageFeature = new Feature({
-        geometry: new Point(fromLonLat([image.lon, image.lat])),
+      let id = idFromLonLat(image.lon, image.lat);
+      if (!imageLocations.has(id)) imageLocations.set(id, {
+        lon: image.lon,
+        lat: image.lat
       });
-      imageFeature.id = idFromLonLat(image.lon, image.lat);
-      imageFeature.setStyle(iconStyle);
-      if (!mediaFeatures.has(imageFeature.id)) mediaFeatures.set(imageFeature.id, imageFeature);
       MediaStorage.addImage(image);
-      // marker.on('click', Gallery.show);
     });
 
+    let mediaLocations = new Map();
+    for (let id of videoLocations.keys()){
+      if (imageLocations.has(id)){
+        mediaLocations.set(id, videoLocations.get(id));
+        videoLocations.delete(id);
+        imageLocations.delete(id);
+      }
+    }
+
+    let mapFeatures = [];
+    videoLocations.forEach((value) => {
+      let f = new Feature({
+        geometry: new Point(fromLonLat([value.lon, value.lat]))
+      })
+      f.setStyle(videoIconStyle);
+      mapFeatures.push(f);
+    })
+    imageLocations.forEach((value) => {
+      let f = new Feature({
+        geometry: new Point(fromLonLat([value.lon, value.lat]))
+      })
+      f.setStyle(imageIconStyle);
+      mapFeatures.push(f);
+    })
+    mediaLocations.forEach((value) => {
+      let f = new Feature({
+        geometry: new Point(fromLonLat([value.lon, value.lat]))
+      })
+      f.setStyle(mediaIconStyle);
+      mapFeatures.push(f);
+    })
 
     worldMap.addLayer(new VectorLayer({
       source: new VectorSource({
-        features: Array.from(mediaFeatures.values())
+        features: mapFeatures
       })
     }));
   };

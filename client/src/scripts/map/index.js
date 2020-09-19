@@ -1,4 +1,4 @@
 export {worldMap} from "./worldMap"
-export {iconStyle} from "./icon"
+export {videoIconStyle, imageIconStyle, mediaIconStyle} from "./icon"
 export {idFromLonLat} from "./location"
 import "./interaction"

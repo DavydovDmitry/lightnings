@@ -1,16 +1,16 @@
 import {backgroundStyle} from "./background";
 import Icon from "ol/style/Icon";
 import {Style} from "ol/style";
-import imageImage from "../../../images/image-icon.svg";
+import mediaImage from "../../../images/media-icon.svg";
 
-const imageIcon = new Icon({
-  src: imageImage,
+const mediaIcon = new Icon({
+  src: mediaImage,
   scale: 0.14
 })
 
-export const imageIconStyle = [
+export const mediaIconStyle = [
   backgroundStyle,
   new Style({
-    image: imageIcon
+    image: mediaIcon
   })]
 ;
