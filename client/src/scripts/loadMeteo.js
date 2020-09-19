@@ -1,12 +1,8 @@
 import {REST_PROTOCOL, REST_IP, REST_PORT} from "./config";
-import {worldMap, videoIconStyle, idFromLonLat, imageIconStyle, mediaIconStyle} from './map';
-import {Feature} from "ol";
-import Point from "ol/geom/Point";
-import {fromLonLat} from "ol/proj";
+import {worldMap, videoIconStyle, idFromLonLat, imageIconStyle, mediaIconStyle, MediaFeature} from './map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import {MediaStorage} from "./mediaStorage";
-import {Gallery} from "./gallery";
 
 export function loadMeteo(){
   const xhr = new XMLHttpRequest();
@@ -46,29 +42,14 @@ export function loadMeteo(){
     }
 
     let mapFeatures = [];
-    videoLocations.forEach((value, key) => {
-      let f = new Feature({
-        geometry: new Point(fromLonLat([value.lon, value.lat]))
-      })
-      f.setStyle(videoIconStyle);
-      f.setId(key);
-      mapFeatures.push(f);
+    videoLocations.forEach((value) => {
+      mapFeatures.push(new MediaFeature(value.lon, value.lat, videoIconStyle));
     })
     imageLocations.forEach((value, key) => {
-      let f = new Feature({
-        geometry: new Point(fromLonLat([value.lon, value.lat]))
-      })
-      f.setStyle(imageIconStyle);
-      f.setId(key);
-      mapFeatures.push(f);
+      mapFeatures.push(new MediaFeature(value.lon, value.lat, imageIconStyle));
     })
-    mediaLocations.forEach((value, key) => {
-      let f = new Feature({
-        geometry: new Point(fromLonLat([value.lon, value.lat]))
-      })
-      f.setStyle(mediaIconStyle);
-      f.setId(key);
-      mapFeatures.push(f);
+    mediaLocations.forEach((value) => {
+      mapFeatures.push(new MediaFeature(value.lon, value.lat));
     })
 
     worldMap.addLayer(new VectorLayer({

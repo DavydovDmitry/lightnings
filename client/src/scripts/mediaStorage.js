@@ -48,7 +48,6 @@ export let MediaStorage = {
   },
   addVideo: async (video) => {
     const galleryId = idFromLonLat(video.lon,video.lat);
-
     const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.videoStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.videoStore);
@@ -67,11 +66,7 @@ export let MediaStorage = {
     await store.put(video, shortcode);
   },
   addImage: async (image) => {
-    const galleryId = Gallery.idFromLocation({
-        lat: image.lat,
-        lng: image.lng
-    });
-
+    const galleryId = idFromLonLat(image.lon, image.lat);
     const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.imageStore, 'readwrite');
     const store = tx.objectStore(MediaStorage.imageStore);
