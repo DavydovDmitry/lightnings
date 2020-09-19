@@ -7,6 +7,6 @@ export const iconStyle = new Style({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     src: videoIcon,
-    scale: 0.3
+    scale: 0.15
   }),
 });

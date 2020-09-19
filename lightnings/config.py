@@ -4,7 +4,7 @@ import datetime
 
 PROGRESSBAR_COLUMNS_NUM = 80
 MAX_DISTANCE = 20
-MAX_TIMEDELTA = timedelta(hours=0, minutes=15)
+MAX_TIMEDELTA = timedelta(hours=12)
 
 CACHE_PATH = pathlib.Path.home().joinpath('.lightnings')
 THUNDER_COORD = CACHE_PATH.joinpath('coords')

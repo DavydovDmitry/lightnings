@@ -1,5 +1,6 @@
 import {openDB} from 'idb'
 import {Gallery} from "./gallery";
+import {idFromLonLat} from "./map";
 
 export let MediaStorage = {
   dbName: 'lightnings',
@@ -46,10 +47,7 @@ export let MediaStorage = {
     return blob.blob;
   },
   addVideo: async (video) => {
-    const galleryId = Gallery.idFromLocation({
-      lat: video.lat,
-      lng: video.lng
-    });
+    const galleryId = idFromLonLat(video.lon,video.lat);
 
     const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
     const tx = db.transaction(MediaStorage.videoStore, 'readwrite');

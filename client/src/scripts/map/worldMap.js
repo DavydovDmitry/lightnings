@@ -4,7 +4,8 @@ import {fromLonLat} from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 
-export const map = new Map({
+// Create map with only one layer - tiles of world map
+export const worldMap = new Map({
   target: 'mapId',
   layers: [
     new TileLayer({
@@ -13,6 +14,6 @@ export const map = new Map({
   ],
   view: new View({
     center: fromLonLat([37, 55]),
-    zoom: 5
+    zoom: 4
   })
 });

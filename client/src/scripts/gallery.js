@@ -27,15 +27,6 @@ export let Gallery = {
     imageElement.appendChild(sourceElement);
     Gallery.multimediaContainer.appendChild(imageElement);
   },
-  idFromLocation: (loc) => {
-    let precision = 2;
-    let result = 'loc';
-    [loc.lat, loc.lng].forEach((x) => {
-        x = Number(x).toFixed(precision);
-        result += String(x).replace('.', '');
-    });
-    return result;
-  },
 
   button: {
     deactivateLeft: () => {
