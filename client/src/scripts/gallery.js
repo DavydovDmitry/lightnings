@@ -1,7 +1,7 @@
 import {MediaStorage} from "./mediaStorage"
 
 export let Gallery = {
-  map: document.querySelector('#mapid'),
+  map: document.querySelector('#map-id'),
   gallery: document.querySelector('#gallery'),
   multimediaContainer: document.querySelector('#multimedia-container'),
   leftButton: document.querySelector('.gallery-button:first-child'),

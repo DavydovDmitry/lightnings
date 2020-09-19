@@ -6,7 +6,7 @@ import OSM from 'ol/source/OSM';
 
 // Create map with only one layer - tiles of world map
 export const worldMap = new Map({
-  target: 'mapId',
+  target: 'map-id',
   layers: [
     new TileLayer({
       source: new OSM()

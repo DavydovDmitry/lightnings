@@ -15,6 +15,6 @@ worldMap.on('pointermove', (event) => {
 worldMap.on('click', (event) => {
   let feature = worldMap.getFeaturesAtPixel(event.pixel)[0];
   if (feature !== undefined){
-    Gallery.show(feature.id);
+    Gallery.show(feature.getId());
   }
 })
