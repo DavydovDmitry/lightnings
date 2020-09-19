@@ -1,0 +1,1 @@
+export {iconStyle} from "./video";
