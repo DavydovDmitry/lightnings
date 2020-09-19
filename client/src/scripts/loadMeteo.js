@@ -46,25 +46,28 @@ export function loadMeteo(){
     }
 
     let mapFeatures = [];
-    videoLocations.forEach((value) => {
+    videoLocations.forEach((value, key) => {
       let f = new Feature({
         geometry: new Point(fromLonLat([value.lon, value.lat]))
       })
       f.setStyle(videoIconStyle);
+      f.setId(key);
       mapFeatures.push(f);
     })
-    imageLocations.forEach((value) => {
+    imageLocations.forEach((value, key) => {
       let f = new Feature({
         geometry: new Point(fromLonLat([value.lon, value.lat]))
       })
       f.setStyle(imageIconStyle);
+      f.setId(key);
       mapFeatures.push(f);
     })
-    mediaLocations.forEach((value) => {
+    mediaLocations.forEach((value, key) => {
       let f = new Feature({
         geometry: new Point(fromLonLat([value.lon, value.lat]))
       })
       f.setStyle(mediaIconStyle);
+      f.setId(key);
       mapFeatures.push(f);
     })
 

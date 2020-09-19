@@ -1,3 +1,1 @@
-export {videoIconStyle} from "./video";
-export {imageIconStyle} from "./image"
-export {mediaIconStyle} from "./media"
+export {mediaIconStyle, imageIconStyle, videoIconStyle} from "./media"

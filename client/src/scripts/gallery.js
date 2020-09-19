@@ -1,3 +1,5 @@
+import {MediaStorage} from "./mediaStorage"
+
 export let Gallery = {
   map: document.querySelector('#mapid'),
   gallery: document.querySelector('#gallery'),
@@ -56,8 +58,8 @@ export let Gallery = {
     }
   },
 
-  show: (e) => {
-    MediaStorage.toGallery(e.latlng).then(() => {
+  show: (id) => {
+    MediaStorage.toGallery(id).then(() => {
       Gallery.media.currentIndex = 0;
       Gallery.media.show();
       if (Gallery.multimediaContainer.childNodes.length > 1){

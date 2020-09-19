@@ -89,8 +89,7 @@ export let MediaStorage = {
     const store = tx.objectStore(MediaStorage.imageStore);
     await store.put(image, shortcode);
   },
-  toGallery: async (loc) => {
-    const galleryId = Gallery.idFromLocation(loc);
+  toGallery: async (galleryId) => {
     const db = await openDB(MediaStorage.dbName, MediaStorage.dbVersion);
 
     let tx = db.transaction(MediaStorage.videoStore, 'readonly');
