@@ -1,41 +1,38 @@
 {
   "name": "lightnings",
   "version": "1.0.0",
-  "description": "This project build a map of thunderstorms with multimedia (images and videos) from Instagram.",
+  "description": "This project build a map (using [OpenLayers](https://openlayers.org/en/latest/apidoc/)) of thunderstorms with multimedia (images and videos) from Instagram.",
   "private": true,
-  "main": "./client/webpack.config.js",
-  "dependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "html-webpack-plugin": "^4.4.1",
-    "idb": "^5.0.6",
-    "leaflet": "^1.7.1",
-    "ol": "^6.4.3",
-    "webpack-cli": "^3.3.12"
-  },
-  "devDependencies": {
-    "css-loader": "^4.3.0",
-    "file-loader": "^6.1.0",
-    "mini-css-extract-plugin": "^0.11.2",
-    "node-sass": "^4.14.1",
-    "sass": "^1.26.11",
-    "sass-loader": "^10.0.2",
-    "style-loader": "^1.2.1",
-    "svg-inline-loader": "^0.8.2",
-    "webpack": "^4.44.2"
-  },
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config ./client/webpack.config.js",
-    "start": "webpack --config ./client/webpack.config.js --watch"
+    "watch": "webpack --config ./client/webpack.config.js --watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DavydovDmitry/lightnings.git"
   },
-  "author": "",
+  "author": "DavydovDmitry",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/DavydovDmitry/lightnings/issues"
   },
-  "homepage": "https://github.com/DavydovDmitry/lightnings#readme"
+  "homepage": "https://github.com/DavydovDmitry/lightnings#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^4.3.0",
+    "file-loader": "^6.1.0",
+    "html-webpack-plugin": "^4.4.1",
+    "mini-css-extract-plugin": "^0.11.2",
+    "sass": "^1.26.11",
+    "sass-loader": "^10.0.2",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "idb": "^5.0.6",
+    "ol": "^6.4.3"
+  }
 }

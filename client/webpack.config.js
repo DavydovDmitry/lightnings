@@ -7,17 +7,17 @@ module.exports = {
   mode: 'development',
   entry: path.resolve(__dirname, 'src', 'index.js'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'inline-source-map',
   module: {
     rules: [
       {
-         test: /\.(png|svg|jpg|gif)$/,
-         use: [
-           'file-loader',
-         ],
+        test: /\.(png|svg|jpg|gif|ico)$/,
+        use: [
+          'file-loader',
+        ],
        },
       {
         test: /.(s*)css$/,
@@ -36,7 +36,7 @@ module.exports = {
       }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, 'src', 'index.html')
+      template: path.resolve(__dirname, 'src', 'index.html'),
     })
   ]
 };
