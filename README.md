@@ -1,6 +1,11 @@
 # Lightnings
 This project build a map (using [OpenLayers](https://openlayers.org/en/latest/apidoc/)) of thunderstorms with multimedia (images and videos) from Instagram.
 
+<p style="display: flex; flex-direction: row;">
+  <h1>Lightnings</h1> 
+  <img src="./client/src/images/logo.ico" width="200" alt="">
+<p>
+
 Essential processing stages:
 - collect locations and time of thinderstorms from [Thunderfinder](http://lightnings.ru/);
 - collect multimedia from [Instagram](https://www.instagram.com/explore/tags/%D0%BC%D0%BE%D0%BB%D0%BD%D0%B8%D1%8F/):
