@@ -1,0 +1,114 @@
+:root{
+  --gallery-width: 800px;
+  --gallery-height: 600px;
+  --gallery-header-height: 40px;
+  --gallery-footer-height: 30px;
+}
+
+#gallery{
+    position: absolute;
+    width: var(--gallery-width);
+    height: var(--gallery-height);
+    display: none;
+    flex-direction: column;
+    left: 50%;
+    margin-left: calc(-0.5 * var(--gallery-width));
+    top: 50%;
+    margin-top: calc(-0.5 * var(--gallery-height));
+
+    z-index: 0;
+    background-color: black;
+    color: white;
+
+    header{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        height: var(--gallery-header-height);
+        margin: 0 10px;
+
+        button{
+            width: 30px;
+            height: 25px;
+        }
+        button:hover{
+            cursor: pointer;
+        }
+    }
+    #gallery-center{
+        position: relative;
+        height: calc(var(--gallery-height) - var(--gallery-header-height) - var(--gallery-footer-height));
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: black;
+
+        .gallery-button{
+            position: absolute;
+            height: 100%;
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: brightness(0.4);
+            opacity: 0.5;
+            z-index: 5;
+            background-color: black;
+            transition: all 0.3s;
+
+            div{
+                width: 50px;
+                height: 50px;
+                background-repeat: no-repeat;
+            }
+        }
+        .gallery-button:first-child{
+            left: 0;
+
+            div{
+                background-image: url("../images/chevron-left-solid.svg");
+            }
+        }
+        .gallery-button:last-child {
+            right: 0;
+
+            div {
+                background-image: url("../images/chevron-right-solid.svg");
+            }
+        }
+        .gallery-button.active:hover{
+            cursor: pointer;
+            opacity: 0.7;
+            filter: brightness(1);
+        }
+
+        #multimedia-container{
+            height: 100%;
+            width: 100%;
+
+            .multimedia{
+                display: none;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+
+                img{
+                    height: 100%;
+                    max-width: 100%;
+                }
+                video{
+                }
+            }
+        }
+    }
+    footer{
+        height: var(--gallery-footer-height);
+        color: white;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}

@@ -25,8 +25,7 @@ def configure_logging(console_level: int = logging.INFO):
         "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
     file_formatter.formatTime = lambda record, datefmt: datetime.datetime.now().strftime(
         "%Y-%m-%d %H:%M:%S")
-    file_handler = logging.FileHandler(
-        filename=f'{LOG_PATH}/{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.log')
+    file_handler = logging.FileHandler(filename=LOG_PATH.joinpath('base.log'))
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(file_formatter)
 

@@ -1,21 +1,32 @@
 import os
 import logging
 
-import tornado.httpserver
-import tornado.ioloop
-import tornado.web
+from aiohttp import web
+import aiohttp_cors
 import socket
 
-from .api import WSHandler
-
-application = tornado.web.Application([
-    (r'/ws', WSHandler, {}),
-])
+from .api.meteo import get_meteodata
+from lightnings.config import INSTAGRAM_DATA
 
 
 def run_server():
-    http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(int(os.environ['REST_PORT']))
+    app = web.Application()
+    app.add_routes([
+        web.get('/meteo', get_meteodata),
+        web.static('/media', INSTAGRAM_DATA.absolute()),
+    ])
+
+    cors = aiohttp_cors.setup(app, defaults={
+        "*": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+        )
+    })
+    for route in list(app.router.routes()):
+        cors.add(route)
+
+    web.run_app(app, host=os.environ['REST_IP'], port=int(os.environ['REST_PORT']))
+
     server_IP = socket.gethostbyname(socket.gethostname())
     logging.info(f'*** Websocket Server Started at {server_IP} ***')
-    tornado.ioloop.IOLoop.instance().start()

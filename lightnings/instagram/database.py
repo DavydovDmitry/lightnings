@@ -20,9 +20,11 @@ def load_media2db(multimedia: Iterable[Multimedia]):
         i_shortcodes = set(x.shortcode for x in session.query(Image.shortcode).all())
         shortcodes = v_shortcodes.union(i_shortcodes)
 
+        new_multimedi_count = 0
         for media in multimedia:
             if media.shortcode not in shortcodes:
                 session.add(media)
                 shortcodes.add(media.shortcode)
+                new_multimedi_count += 1
         session.commit()
-    logging.info('Load media to database successfully.')
+    logging.info(f'Finish load media to database (new {new_multimedi_count} images/videos).')

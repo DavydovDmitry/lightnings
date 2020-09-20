@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from . import Base
 from .thunder import Thunder
-from .location import Location
 
 
 class Multimedia(Base):
@@ -13,7 +12,7 @@ class Multimedia(Base):
 
     id = Column(Integer, primary_key=True)
     shortcode = Column(String(50), nullable=False)
-    url = Column(String(1000), nullable=False, unique=True)
+    url = Column(String(1000), nullable=False)
     loaded_date = Column(DateTime)
 
     width = Column(Integer)
