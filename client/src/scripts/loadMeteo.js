@@ -1,5 +1,6 @@
 import {REST_PROTOCOL, REST_IP, REST_PORT} from "./config";
-import {worldMap, videoIconStyle, idFromLonLat, imageIconStyle, mediaIconStyle, MediaFeature} from './map';
+import {idFromLonLat} from "./locationId"
+import {worldMap, videoIconStyle, imageIconStyle, MediaFeature} from './map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import {MediaStorage} from "./mediaStorage";
@@ -8,7 +9,7 @@ export function loadMeteo(){
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${REST_PROTOCOL}://${REST_IP}:${REST_PORT}/meteo`);
   xhr.onload = async (evt) => {
-    await MediaStorage.createStores();
+    await MediaStorage.createObjectStores();
     let data = JSON.parse(evt.target.response);
 
     let videoLocations = new Map();

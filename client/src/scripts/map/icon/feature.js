@@ -2,7 +2,7 @@ import {Feature} from "ol"
 import Point from "ol/geom/Point";
 import {fromLonLat} from "ol/proj";
 import {mediaIconStyle, imageIconStyle, videoIconStyle} from "../icon"
-import {idFromLonLat} from "../location"
+import {idFromLonLat} from "../../locationId"
 
 export class MediaFeature extends Feature{
   constructor(lon, lat, style=mediaIconStyle){
