@@ -2,11 +2,13 @@ from typing import List, Tuple, Dict
 from datetime import datetime
 import math
 from dataclasses import dataclass
+from urllib.parse import urlparse
+import pathlib
 
 from lightnings.database.thunder import Thunder
 from lightnings.database.multimedia import Video, Image, Multimedia
-from lightnings.config import MAX_DISTANCE
-from lightnings.config import MAX_TIMEDELTA
+from lightnings.config import MAX_DISTANCE, MAX_TIMEDELTA, INSTAGRAM_DATA
+
 
 
 @dataclass
@@ -48,8 +50,10 @@ def get_lightnings_media(session, time_start: datetime,
     for video in db_videos:
         for thunder in thunderstorms:
             if thunder.time_start - MAX_TIMEDELTA < video.loaded_date < thunder.time_end + MAX_TIMEDELTA:
+                extension = pathlib.Path(urlparse(video.url).path).suffix
                 videos.append({
-                    'url': video.url,
+                    'url': video.shortcode + extension,
+                    'shortcode': video.shortcode,
                     'lat': thunder.latitude,
                     'lon': thunder.longitude
                 })
@@ -61,6 +65,7 @@ def get_lightnings_media(session, time_start: datetime,
             if thunder.time_start - MAX_TIMEDELTA < img.loaded_date < thunder.time_end + MAX_TIMEDELTA:
                 images.append({
                     'url': img.url,
+                    'shortcode': img.shortcode,
                     'lat': thunder.latitude,
                     'lon': thunder.longitude,
                     'width': img.width,

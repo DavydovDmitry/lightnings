@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from . import Base
 from .thunder import Thunder
-from .location import Location
 
 
 class Multimedia(Base):

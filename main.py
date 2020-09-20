@@ -22,8 +22,8 @@ if __name__ == "__main__":
     load_thunders2db(get_thunders_from_dumps())
 
     # collect media
-    multimedia = collect_multimedia_by_tag(tag='молния', view_limit=10000)
-    load_media2db(multimedia)
+    # multimedia = collect_multimedia_by_tag(tag='молния', view_limit=1000)
+    # load_media2db(multimedia)
 
     # build_map()
     run_server()
