@@ -10,6 +10,11 @@ export let Gallery = {
   navButtons: navButtons,
 
   open: async (id) => {
+    let videos = await MediaStorage.getVideosByGalleryId(id);
+    videos.forEach((video) => {
+      addVideo(video);
+    })
+
     let images = await MediaStorage.getImagesByGalleryId(id);
     images.forEach((image) => {
       addImage(image);

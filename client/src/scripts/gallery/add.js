@@ -1,15 +1,18 @@
+import {REST_PROTOCOL, REST_IP, REST_PORT} from "../config";
 import {mediaContainer} from "./mediaContainer";
 
 export function addVideo(video) {
   let videoElement = document.createElement('video');
   videoElement.classList.add('multimedia');
+  videoElement.setAttribute('controls', '')
+  videoElement.setAttribute('autoplay', '');
+  videoElement.setAttribute('width', '100%');
 
   let sourceElement = document.createElement('source');
-  sourceElement.setAttribute('src', video.url);
+  sourceElement.setAttribute('src', `${REST_PROTOCOL}://${REST_IP}:${REST_PORT}/media/${video.url}`);
 
   videoElement.appendChild(sourceElement);
   mediaContainer.element.appendChild(videoElement);
-  sourceElement.play();
 }
 
 export function addImage(image) {
