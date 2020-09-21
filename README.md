@@ -16,15 +16,7 @@ Essential processing stages:
 - [Poetry](https://python-poetry.org/docs/) >= 0.12
 
 ## Run
-Run server (gather media and handle requests)
 ```shell script
-docker-compose build 
+docker-compose build &&
 docker-compose up
-```
-
-Build and open client (display map)
-```shell script
-npm install &&
-npm run build &&
-npm run server
 ```

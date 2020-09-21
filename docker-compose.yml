@@ -6,29 +6,36 @@ services:
       - .env
     image: postgres:latest
     container_name: "lightnings"
-    restart: unless-stopped
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+    expose:
+      - ${DB_PORT}
     ports:
-      - "${DB_PORT}:5432"
+      - 5432:${DB_PORT}
     volumes:
       - ./database:/var/lib/postgresql
+    restart: unless-stopped
 
   rest:
     env_file:
       - .env
-    build: .
+    build:
+      dockerfile: Dockerfile
+      context: .
     image: davydofdmitry/lightnings_rest
     container_name: "lightnings_rest"
     depends_on:
       - db
     ports:
-      - "${REST_PORT}:5000"
+      - ${REST_OUTER_PORT}:${REST_PORT}
+    volumes:
+      - /home/.lightnings:/home/.lightnings
     command: python main.py
     restart: unless-stopped
 
 volumes:
   database:
+  rest:
 

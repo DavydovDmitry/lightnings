@@ -4,10 +4,9 @@
 **/__pycache__
 **/node_modules
 
-client
+dockerfile
 
 *.editorconfig
 *.yml
 *.yapf
 *.md
-Dockerfile
