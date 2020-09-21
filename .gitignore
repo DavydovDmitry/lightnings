@@ -1,7 +1,6 @@
 .idea/
 node_modules/
 
-**/dist/
 **/__pycache__/
 **/.ipynb_checkpoints/
 **/.sass-cache/
@@ -19,7 +18,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
