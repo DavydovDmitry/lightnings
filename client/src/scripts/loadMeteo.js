@@ -7,7 +7,7 @@ import {MediaStorage} from "./mediaStorage";
 
 export function loadMeteo(){
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', `${REST_PROTOCOL}://${REST_IP}:${REST_PORT}/meteo`);
+  xhr.open('GET', `${REST_PROTOCOL}//${REST_IP}:${REST_PORT}/meteo`);
   xhr.onload = async (evt) => {
     await MediaStorage.createObjectStores();
     let data = JSON.parse(evt.target.response);
