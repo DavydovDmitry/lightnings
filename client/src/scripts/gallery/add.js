@@ -9,7 +9,7 @@ export function addVideo(video) {
   videoElement.setAttribute('width', '100%');
 
   let sourceElement = document.createElement('source');
-  sourceElement.setAttribute('src', `${REST_PROTOCOL}://${REST_IP}:${REST_PORT}/media/${video.url}`);
+  sourceElement.setAttribute('src', `${REST_PROTOCOL}//${REST_IP}:${REST_PORT}/media/${video.url}`);
 
   videoElement.appendChild(sourceElement);
   mediaContainer.element.appendChild(videoElement);
