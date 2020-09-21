@@ -12,12 +12,19 @@ Essential processing stages:
 </p>
 
 ## Setup
-
 - [Python](https://www.python.org/downloads/) >= 3.7
 - [Poetry](https://python-poetry.org/docs/) >= 0.12
 
-## Execution
+## Run
+Run server (gather media and handle requests)
 ```shell script
-export $(cat .env) &&
+docker-compose build 
 docker-compose up
+```
+
+Build and open client (display map)
+```shell script
+npm install &&
+npm run build &&
+npm run server
 ```

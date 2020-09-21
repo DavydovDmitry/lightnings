@@ -1,0 +1,13 @@
+**/.vscode
+**/.idea
+**/.git
+**/__pycache__
+**/node_modules
+
+client
+
+*.editorconfig
+*.yml
+*.yapf
+*.md
+Dockerfile

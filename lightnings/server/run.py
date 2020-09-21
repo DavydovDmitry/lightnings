@@ -10,6 +10,7 @@ from lightnings.config import INSTAGRAM_DATA
 
 
 def run_server():
+    logging.info('Try run server...')
     app = web.Application()
     app.add_routes([
         web.get('/meteo', get_meteodata),
@@ -27,6 +28,7 @@ def run_server():
         cors.add(route)
 
     web.run_app(app, host=os.environ['REST_IP'], port=int(os.environ['REST_PORT']))
+    web.run_app(app)
 
     server_IP = socket.gethostbyname(socket.gethostname())
     logging.info(f'*** Websocket Server Started at {server_IP} ***')

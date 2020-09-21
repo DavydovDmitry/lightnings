@@ -1,4 +1,5 @@
 import pathlib
+import os
 from datetime import timedelta
 import datetime
 
@@ -6,7 +7,7 @@ PROGRESSBAR_COLUMNS_NUM = 80
 MAX_DISTANCE = 20
 MAX_TIMEDELTA = timedelta(hours=12)
 
-CACHE_PATH = pathlib.Path.home().joinpath('.lightnings')
+CACHE_PATH = pathlib.Path(os.environ['CACHE_PATH'])
 THUNDER_COORD = CACHE_PATH.joinpath('coords')
 INSTAGRAM_DATA = CACHE_PATH.joinpath('instagram')
 

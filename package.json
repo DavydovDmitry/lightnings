@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config ./client/webpack.config.js",
-    "watch": "webpack --config ./client/webpack.config.js --watch"
+    "watch": "webpack --config ./client/webpack.config.js --watch",
+    "server": "webpack-dev-server --open --config ./client/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,8 @@
     "sass-loader": "^10.0.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "idb": "^5.0.6",

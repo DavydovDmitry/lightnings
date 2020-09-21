@@ -25,6 +25,4 @@ if __name__ == "__main__":
     # multimedia = collect_multimedia_by_tag(tag='молния', view_limit=1000)
     # load_media2db(multimedia)
 
-    # build_map()
     run_server()
-    # update_data()
